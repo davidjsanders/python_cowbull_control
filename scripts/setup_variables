@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+version="102917"
+rg="k8ClusterRG"$version
+clusterName="k8Cluster"$version
+masters="1"
+agents="1"
+location="westus2"
+machineType="Standard_A2"
+#machineType="Standard_DS2_v2"
+dnsPrefix="dasanderk8"
+publicIpDNS="cowbull-azure"
+keyfile=~/.ssh/id_rsa
+autoGroup="MC_"$rg"_"$clusterName"_"$location
