@@ -1,20 +1,46 @@
 #!/usr/bin/env bash
 source ../../scripts/setup_variables
 #
+# ERROR CHECKING *BEFORE* EXECUTION STARTS
+#
 # Check azure cli 2.0 is installed
 #
+echo ""
+echo "Deploy CowBull game to Kubernetes cluster running on Azure"
+echo "=========================================================="
+echo ""
+echo "Validate environment"
+echo "|------------------------------------|----| "
 azpath=$(which az)"x"
+echo -n "| azure cli is installed             | "
 if [[ $azpath == "x"  ]]
 then
+    echo
     echo ""
     echo "Error; the Azure CLI (version 2.0+) must be installed. "
     echo "See https://docs.microsoft.com/en-us/cli/azure/install-azure-cli?view=azure-cli-latesti "
     echo ""
     exit 1
 fi
-echo ""
-echo "Deploy CowBull game to Kubernetes cluster running on Azure"
-echo "=========================================================="
+echo "ok |"
+
+echo -n "| private key is available           | "
+if [ ! -f ~/.ssh/id_rsa ]
+then
+    echo
+    echo ""
+    echo "Error; there is no id_rsa private key in the .ssh subdirectory"
+    echo "You need to create it. Do the following:"
+    echo ""
+    echo "1. cd ~/.ssh"
+    echo "2. ssh-keygen -b 4096 -t rsa"
+    echo ""
+    echo "(In step 2, make sure to accept the default id_rsa)"
+    echo ""
+    exit 1
+fi
+echo "ok |"
+echo "|------------------------------------|----| "
 echo ""
 echo "Configuration will be set as follows:"
 echo "-------------------------------------"
