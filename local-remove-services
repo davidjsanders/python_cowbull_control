@@ -1,0 +1,37 @@
+#!/usr/bin/env bash
+source setup_variables
+echo ""
+echo "Teardown CowBull game to Kubernetes cluster running locally"
+echo "==========================================================="
+echo ""
+read -p "Continue (y for yes, anything else to quit)? " -n 1 -r
+echo ""
+if [[ ! $REPLY =~ ^[Yy]$ ]]
+then
+    echo "Exiting".
+    exit 0
+fi
+echo ""
+echo "1. Removng configuration and services"
+kubectl delete configmap cowbull-config --ignore-not-found
+kubectl delete \
+    -f redis-deploy.yml \
+    --ignore-not-found
+kubectl delete \
+    -f redis-service.yml \
+    --ignore-not-found
+kubectl delete \
+    -f cowbull-deploy.yml \
+    --ignore-not-found
+kubectl delete \
+    -f cowbull-service.yml \
+    --ignore-not-found
+kubectl delete \
+    -f webapp-deploy.yml \
+    --ignore-not-found
+echo ""
+echo "2. Remove CowBull web app and network interfaces."
+kubectl delete service webapp --ignore-not-found
+echo ""
+echo "Done."
+echo ""
