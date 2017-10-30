@@ -9,8 +9,10 @@ echo ""
 echo "Deploy CowBull game to Kubernetes cluster running on Azure"
 echo "=========================================================="
 echo ""
-echo "Validate environment"
 echo "|------------------------------------|----| "
+echo "| Validate environment               | ?? |"
+echo "|------------------------------------|----| "
+
 azpath=$(which az)"x"
 echo -n "| azure cli is installed             | "
 if [[ $azpath == "x"  ]]
@@ -40,6 +42,33 @@ then
     exit 1
 fi
 echo "ok |"
+
+echo -n "| Checking group does not exist      | "
+groupCheck=$(az group list --query '[?name==`$rg`]|[?location==`$location`].name' --output tsv)"x"
+if [[ $groupCheck != "x" ]]
+then
+    echo
+    echo ""
+    echo "Error; the group ("$rg") in location "$location" already exists!"
+    echo "Remove the group before proceeding"
+    echo ""
+    exit 1
+fi
+echo "ok |"
+
+echo -n "| Checking ssh is running correctly  | "
+sshAgent=$(ps -ef | grep "ssh-agent" | grep -v grep)"x"
+if [[ $sshAgent == "x" ]]
+then
+    echo
+    echo ""
+    echo "Error; ssh is not running. Run the following command before running..."
+    echo "eval "$(ssh-agent -s)""
+    echo ""
+    exit 1
+fi
+echo "ok |"
+
 echo "|------------------------------------|----| "
 echo ""
 echo "Configuration will be set as follows:"
