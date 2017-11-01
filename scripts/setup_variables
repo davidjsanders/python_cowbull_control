@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-version="102917"
+version="103017"
 rg="k8ClusterRG"$version
 clusterName="k8Cluster"$version
 masters="1"

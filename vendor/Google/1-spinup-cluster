@@ -4,8 +4,8 @@
 #
 #
 echo ""
-echo "Deploy CowBull game to Kubernetes cluster running on Azure"
-echo "=========================================================="
+echo "Deploy CowBull game to Kubernetes cluster running on GKE"
+echo "========================================================"
 echo ""
 echo "|------------------------------------|--------| "
 echo "| Validate environment               | Status |"
@@ -25,14 +25,14 @@ then
 fi
 echo "  ok   |"
 
-azpath=$(which az)"x"
-echo -n "| azure cli is installed             | "
-if [[ $azpath == "x" ]]
+gcloudpath=$(which gcloud)"x"
+echo -n "| gcloud cli is installed            | "
+if [[ $gcloudpath == "x" ]]
 then
     echo " FAIL  |"
     echo ""
-    echo "Error; the Azure CLI (version 2.0+) must be installed. "
-    echo "See https://docs.microsoft.com/en-us/cli/azure/install-azure-cli?view=azure-cli-latesti "
+    echo "Error; the gcloud CLI (version 2.0+) must be installed. "
+    echo "See https://cloud.google.com/sdk/docs/#install_the_latest_cloud_tools_version_cloudsdk_current_version "
     echo ""
     return 1
 fi
@@ -55,14 +55,27 @@ then
 fi
 echo "  ok   |"
 
-echo -n "| Checking group does not exist      | "
-groupCheck=$(az group list --query '[?name==`$GROUP`]|[?location==`$LOCATION`].name' --output tsv)"x"
-if [[ $groupCheck != "x" ]]
+echo -n "| Check gcloud auth active user set  | "
+gcloudauth=$(gcloud auth list --filter=status:ACTIVE --format="value(account)")"x"
+if [[ $gcloudauth == "x" ]]
 then
     echo " FAIL  |"
     echo ""
-    echo "Error; the group ("$GROUP") in location "$LOCATION" already exists!"
-    echo "Remove the group before proceeding"
+    echo "Error; the gcloud SDK is not authorised."
+    echo "Please execute 'gcloud auth login ...' before proceeding."
+    echo ""
+    return 1
+fi
+echo "  ok   |"
+
+echo -n "| Check project is set in SDK        | "
+gcloudproject=$(gcloud config list project --format=flattened)"x"
+if [[ $gcloudauth == "x" ]]
+then
+    echo " FAIL  |"
+    echo ""
+    echo "Error; the gcloud SDK default project is not set."
+    echo "Please execute 'gcloud config set project ...' before proceeding."
     echo ""
     return 1
 fi
@@ -97,6 +110,7 @@ echo "dns prefix    :   "$DNS_PREFIX
 echo "cowbull dns   :   "$PIP_NAME"."$DNS_PREFIX"."$LOCATION".cloudapp.azure.com"
 echo "private key   :   "$KEYFILE
 echo ""
+
 if [[ $DRYRUN == 1  ]]
 then
     echo
@@ -105,38 +119,25 @@ then
 fi
 
 echo ""
-echo "1. Create the resource group"$GROUP
+echo "1. Create the cluster. --resource-group "$GROUP" --name "$CLUSTER" --agent-count "$AGENT_COUNT" --agent-vm-size "$MACHINE_TYPE
 echo ""
-echo -n "az group create --name $GROUP --location $LOCATION "
+echo "gcloud container clusters create $CLUSTER --disk-size 100 --zone $LOCATION --enable-cloud-logging --enable-cloud-monitoring --machine-type $MACHINE_TYPE --num-nodes $AGENT_COUNT"
 if [[ $DRYRUN != 1  ]]
 then
-    az group create --name $GROUP --location $LOCATION
+    gcloud container clusters create $CLUSTER \
+      --disk-size $DISK_SIZE \
+      --zone $LOCATION \
+      --enable-cloud-logging \
+      --enable-cloud-monitoring \
+      --machine-type $MACHINE_TYPE \
+      --num-nodes $AGENT_COUNT
     echo
 else
     echo "... dry run only"
 fi
 
 echo ""
-echo "2. Create the cluster. --resource-group "$GROUP" --name "$CLUSTER" --agent-count "$AGENT_COUNT" --agent-vm-size "$MACHINE_TYPE
-echo ""
-echo -n "az aks create --resource-group $GROUP --name $CLUSTER --generate-ssh-keys --agent-count $AGENT_COUNT --agent-vm-size $MACHINE_TYPE "
-if [[ $DRYRUN != 1  ]]
-then
-    az aks create \
-      --resource-group $GROUP \
-      --name $CLUSTER \
-      --generate-ssh-keys \
-      --dns-name-prefix $DNS_PREFIX \
-      --kubernetes-version 1.8.1 \
-      --agent-count $AGENT_COUNT \
-      --agent-vm-size $MACHINE_TYPE
-    echo
-else
-    echo "... dry run only"
-fi
-
-echo ""
-echo "3. Add your private key ("$KEYFILE")"
+echo "2. Add your private key ("$KEYFILE")"
 echo ""
 echo -n "ssh-add -k $KEYFILE "
 if [[ $DRYRUN != 1  ]]
@@ -148,12 +149,12 @@ else
 fi
 
 echo ""
-echo "4. Get kubernetes credentials to configure kubectl"
+echo "3. Get kubernetes credentials to configure kubectl"
 echo ""
-echo -n "az aks get-credentials --resource-group=$GROUP --name=$CLUSTER "
+echo -n "gcloud container clusters get-credentials $CLUSTER"
 if [[ $DRYRUN != 1  ]]
 then
-    az aks get-credentials --resource-group=$GROUP --name=$CLUSTER
+    gcloud container clusters get-credentials $CLUSTER --zone=$LOCATION
     echo
 else
     echo "... dry run only"

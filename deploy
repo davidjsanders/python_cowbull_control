@@ -1,0 +1,360 @@
+#!/usr/bin/env bash
+function showInfo {
+    HELPTEXT="Python Cowbull Game: deploy (BASH shell script)\n"
+    HELPTEXT=${HELPTEXT}"===============================================\n\n"
+    HELPTEXT=${HELPTEXT}"The python cowbull game is a set of microservices which support the playing of "
+    HELPTEXT=${HELPTEXT}"a Cow Bull game (secret numbers, user guesses, and status of hits - Bull is a "
+    HELPTEXT=${HELPTEXT}"right number in the right place, Cow is a right number in the wrong place."
+    HELPTEXT=${HELPTEXT}"\n\n"
+    HELPTEXT=${HELPTEXT}"This script (deploy) takes a nunmber of parameters as follows:\n"
+    echo >&2
+    echo -e $HELPTEXT >&2
+    echo >&2
+}
+
+function showConfigAzure0 {
+    :
+}
+
+function showConfigAzure1 {
+    echo
+    echo "Deploy to Azure                : selected" >&2
+    echo "_______________________________________________________________________"
+    echo "Group name                     : "${GROUP} >&2
+    echo "Cluster name                   : "${CLUSTER} >&2
+    echo "Auto group name                : "${AUTOGROUP} >&2
+    echo "Resource group location        : "${LOCATION} >&2
+    echo "Number of agents               : "${AGENT_COUNT} >&2
+    echo "Machine type for agents        : "${MACHINE_TYPE} >&2
+    echo "DNS Prefix (Azure only)        : "${DNS_PREFIX} >&2
+    echo "PIP Name (Azure only)          : "${PIP_NAME} >&2
+}
+
+function showConfigGoogle0 {
+    :
+}
+
+function showConfigGoogle1 {
+    echo
+    echo "Deploy to Google               : selected" >&2
+    echo "_______________________________________________________________________"
+    echo "Cluster name                   : "${CLUSTER} >&2
+    echo "Google zone (location)         : "${LOCATION} >&2
+    echo "Agent disk size                : "${DISK_SIZE} >&2
+    echo "Number of agents               : "${AGENT_COUNT} >&2
+    echo "Machine type for agents        : "${MACHINE_TYPE} >&2
+}
+
+function showConfigMinikube0 {
+    :
+}
+
+function showConfigMinikube1 {
+    echo
+    echo "Deploy to Minikube             : selected" >&2
+    echo "_______________________________________________________________________"
+    echo "Minikube CPU allocation        : "${MINICPU} >&2
+    echo "Minikube RAM allocation        : "${MINIRAM} >&2
+}
+
+function showConfig {
+    showConfigAzure$EXEAZURE
+    showConfigGoogle$EXEGOOGLE
+    showConfigMinikube$EXEMINIKUBE
+
+    echo "SSH Key file                   : "${KEYFILE} >&2
+    echo
+    echo "Debug status                   : "${DEBUG} >&2
+    echo "Quiet mode                     : "${QUIET} >&2
+    echo "Start execution at stage       : "${START_AT} >&2
+    echo -n "Dry run?                       : " >&2
+    if [[ $DRYRUN == 1  ]];
+    then
+        echo "yes" >&2
+    else
+        echo "no" >&2
+    fi
+    echo >&2
+}
+
+function showHelp {
+    echo >&2
+    echo "deploy --..." >&2
+    echo " -a | --agents x         Specify the number of K8S agents" >&2
+    echo " -b | --disk-size        Specify the disk size (for Google only)" >&2
+    echo " -c | --mini-cpu         Specify the number of CPUs to allow Minikube to consume"
+    echo " -d | --debug            Use debug mode" >&2
+    echo " -g | --group g          Specify the resource group" >&2
+    echo " -h | --help             Display this message" >&2
+    echo " -k | --minikube         Deploy the application on minikube locally"
+    echo " -l | --location l       Specify the location for the resource group" >&2
+    echo " -m | --masters x        Specify the number of K8S masters" >&2
+    echo " -n | --dns-name n       Specify the DNS prefix name" >&2
+    echo " -p | --pip-name n       Specify the DNS name for the webapp public IP" >&2
+    echo " -q | --quiet            Run in quiet mode supressing prompts" >&2
+    echo " -r | --mini-ram         Specify the memory to be used with Minikube" >&2
+    echo " -s | --start-at n       Specify the sequence to start at: 1 (spinup cluster) or 2 (deploy services)"
+    echo " -t | --machine-type g   Specify the machine type for agents" >&2
+    echo " -A | --azure            Deploy to Azure" >&2
+    echo " -D | --dry-run          Do NOT execute the script, simply dry run it" >&2
+    echo " -G | --google           Deploy to Google" >&2
+    echo
+}
+
+function removeK8Scomponents {
+    kubectl delete configmap cowbull-config --ignore-not-found
+    kubectl delete \
+        -f redis-deploy.yml \
+        --ignore-not-found
+    kubectl delete \
+        -f redis-service.yml \
+        --ignore-not-found
+    kubectl delete \
+        -f cowbull-deploy.yml \
+        --ignore-not-found
+    kubectl delete \
+        -f cowbull-service.yml \
+        --ignore-not-found
+    kubectl delete \
+        -f webapp-deploy.yml \
+        --ignore-not-found
+    kubectl delete \
+        -f webapp-service.yml \
+        --ignore-not-found
+    kubectl delete svc webapp --ignore-not-found
+}
+
+function deployK8Scomponents {
+    kubectl create configmap cowbull-config \
+      --from-file=cowbull.cfg
+    kubectl create -f redis-service.yml
+    kubectl create -f redis-deploy.yml
+    kubectl create -f cowbull-service.yml
+    kubectl create -f cowbull-deploy.yml
+    kubectl create -f webapp-deploy.yml
+}
+
+OPTIONS=dfo:vm:
+LONGOPTIONS=debug,force,output:,verbose
+
+PARSED=$(\
+  getopt \
+  --options=AGDc:r:b:s:t:p:n:qdhg:m:a:l:k \
+  --long=debug,mini-cpu:,mini-ram:,disk-size:,minikube,start-at:,pip-name:,dns-name:,machine-type:,quiet,dry-run,azure,google,group:,masters:,agents:,location: \
+  --name "Cowbull deployment script" \
+  -- "$@"\
+)
+
+if [ $? != 0 ];
+then
+    showHelp
+    exit 1
+fi
+
+EXEAZURE=0
+EXEGOOGLE=0
+EXEMINIKUBE=0
+DATEFILL=$(date +"%m%d%y")
+GROUP="k8"${DATEFILL}"RG"
+MASTER_COUNT=1
+AGENT_COUNT=1
+LOCATION="westus2"
+MACHINE_TYPE="Standard_A2"
+DNS_PREFIX="dnsprefix"
+PIP_NAME="cowbull_webapp"
+DEBUG=0
+DRYRUN=0
+KEYFILE=~/.ssh/id_rsa
+QUIET=0
+START_AT=1
+DISK_SIZE=100
+MINIRAM=5192
+MINICPU=4
+
+while true; do
+    case "$1" in
+        -h|--help)
+            showHelp
+            exit 1
+            ;;
+        -s|--start-at)
+            START_AT=$2
+            shift 2
+            ;;
+        -b|--disk-size)
+            DISK_SIZE=$2
+            shift 2
+            ;;
+        -q|--quiet)
+            QUIET=1
+            shift
+            ;;
+        -p|--pip-name)
+            PIP_NAME=$2
+            shift 2
+            ;;
+        -r|--mini-ram)
+            MINIRAM=$2
+            shift 2
+            ;;
+        -c|--mini-cpu)
+            MINICPU=$2
+            shift 2
+            ;;
+        -n|--dns-name)
+            DNS_PREFIX=$2
+            shift 2
+            ;;
+        -t|--machine-type)
+            MACHINE_TYPE=$2
+            shift 2
+            ;;
+        -l|--location)
+            LOCATION=$2
+            shift 2
+            ;;
+        -m|--masters)
+            MASTER_COUNT=$2
+            shift 2
+            ;;
+        -a|--agents)
+            AGENT_COUNT=$2
+            shift 2
+            ;;
+        -d|--debug)
+            DEBUG=1
+            shift
+            ;;
+        -A|--azure)
+            EXEAZURE=1
+            shift
+            ;;
+        -G|--google)
+            EXEGOOGLE=1
+            shift
+            ;;
+        -k|--minikube)
+            EXEMINIKUBE=1
+            shift
+            ;;
+        -D|--dry-run)
+            DRYRUN=1
+            shift
+            ;;
+        -g|--group)
+            GROUP=$2
+            shift 2
+            ;;
+        --|\ )
+            shift
+            break
+            ;;
+        \?)
+            shift
+            ;;
+        *)
+            if [[ $1"X" != "X" ]];
+            then
+                echo "Unexpected argument: ${1}"
+            fi
+            break
+            ;;
+    esac
+done
+
+echo >&2
+echo "Deploying Python Cowbull suite with the following options:" >&2
+echo "----------------------------------------------------------" >&2
+if [[ $DEBUG == 1 ]] ;
+then
+    echo "" >&2
+    echo "*" >&2
+    echo "* DEBUG" >&2
+    echo "* -----" >&2
+    echo "* EXEAZURE:  "$EXEAZURE >&2
+    echo "* EXEGOOGLE: "$EXEGOOGLE >&2
+    echo "* EXEMINIKUBE: "$EXEMINIKUBE >&2
+    echo "* GROUP:     "$GROUP >&2
+    echo "* DRY RUN:   "$DRYRUN >&2
+    echo "* DEBUG:     "$DEBUG >&2
+    echo "*" >&2
+    echo "" >&2
+fi
+
+CLUSTER=${GROUP}"cluster"
+AUTOGROUP="MC_"${GROUP}"_"${CLUSTER}"_"${LOCATION}
+
+showConfig
+
+if [[ $QUIET != 1 ]]
+then
+    read -p "Continue (y for yes, anything else to quit)? " -n 1 -r
+    echo "" >&2
+    if [[ ! $REPLY =~ ^[Yy]$ ]]
+    then
+        echo >&2
+        exit 0
+    fi
+fi
+
+if (( $START_AT <= 1 ))
+then
+    if [[ $EXEAZURE == 1  ]];
+    then
+        source vendor/Azure/1-spinup-cluster
+        if [ $? != 0  ]; then exit 1; fi
+    fi
+
+    if [[ $EXEGOOGLE == 1 ]];
+    then
+        source vendor/Google/1-spinup-cluster
+        if [ $? != 0  ]; then exit 1; fi
+    fi
+
+    if [[ $EXEMINIKUBE == 1 ]];
+    then
+        source vendor/minikube/1-spinup-cluster
+        if [ $? != 0  ]; then exit 1; fi
+    fi
+
+    echo >&2
+    echo "-------------------------------------------------------------------------" >&2
+    echo "Cluster ready." >&2
+    echo "-------------------------------------------------------------------------" >&2
+    echo >&2
+    showConfig
+    echo >&2
+fi
+
+if (( $START_AT <= 2 ))
+then
+    if (( $DRYRUN != 1 ));
+    then
+        removeK8Scomponents
+        deployK8Scomponents
+    fi
+
+    azure_option=""
+    if (( $EXEAZURE == 1 ));
+    then
+        if (( $DRYRUN != 1 ));
+        then
+            ipaddr=$(\
+              az network public-ip create \
+              --name $DNS_PREFIX"-webapp-pip" \
+              --dns-name $PIP_NAME \
+              --allocation-method static \
+              --version IPv4 \
+              -g $AUTOGROUP \
+              -o json | jq -r .publicIp.ipAddress)
+            azure_option="--load-balancer-ip="${ipaddr}
+        fi
+    fi
+
+    if (( $DRYRUN != 1 ));
+    then
+        kubectl expose deployment webapp --type=LoadBalancer $azure_option
+    fi
+fi
+
+exit 0
