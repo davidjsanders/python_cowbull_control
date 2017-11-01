@@ -86,7 +86,6 @@ function showHelp {
     echo " -d | --debug            Use debug mode" >&2
     echo " -g | --group g          Specify the resource group" >&2
     echo " -h | --help             Display this message" >&2
-    echo " -k | --minikube         Deploy the application on minikube locally"
     echo " -l | --location l       Specify the location for the resource group" >&2
     echo " -m | --masters x        Specify the number of K8S masters" >&2
     echo " -n | --dns-name n       Specify the DNS prefix name" >&2
@@ -98,6 +97,7 @@ function showHelp {
     echo " -A | --azure            Deploy to Azure" >&2
     echo " -D | --dry-run          Do NOT execute the script, simply dry run it" >&2
     echo " -G | --google           Deploy to Google" >&2
+    echo " -K | --minikube         Deploy the application on minikube locally"
     echo
 }
 
