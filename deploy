@@ -406,69 +406,33 @@ fi
 if (( $TEARDOWN == 1 ))
 then
     echo ""
-    echo "Tearing down Python CowBull game"
-    echo "================================"
+    echo "Tearing down Python CowBull game infrastructure"
+    echo "==============================================="
     echo ""
-    if (( $DEPLOYSERVICES == 1 || $DEPLOYFULL == 1 ))
+
+    if [[ $EXEAZURE == 1  ]];
     then
-        echo ""
-        echo "Tearing down Python CowBull game configuration, pods, and services"
-        echo "=================================================================="
-        echo ""
-
-        removeK8Scomponents
-
-        if (( $EXEAZURE == 1 ));
-        then
-            if (( $DRYRUN == 0 ));
-            then
-                az network public-ip delete --name $DNS_PREFIX"-webapp-pip" -g $AUTOGROUP
-            else
-                echo
-                echo "Dry run - Assign static IP to load balancer."
-                echo "--------------------------------------------"
-                echo "az network public-ip delete --name $DNS_PREFIX-webapp-pip -g $AUTOGROUP"
-            fi
-        fi
-
-        echo >&2
-        echo "-------------------------------------------------------------------------" >&2
-        echo "Services torn down." >&2
-        echo "-------------------------------------------------------------------------" >&2
-        echo >&2
+        source vendor/Azure/spindown-cluster
+        if [ $? != 0  ]; then exit 1; fi
     fi
 
-    if (( $DEPLOYCLUSTER == 1 || $DEPLOYFULL == 1 ))
+    if [[ $EXEGOOGLE == 1 ]];
     then
-        echo ""
-        echo "Tearing down Python CowBull game infrastructure"
-        echo "==============================================="
-        echo ""
-
-        if [[ $EXEAZURE == 1  ]];
-        then
-            source vendor/Azure/spindown-cluster
-            if [ $? != 0  ]; then exit 1; fi
-        fi
-
-        if [[ $EXEGOOGLE == 1 ]];
-        then
-            source vendor/Google/spindown-cluster
-            if [ $? != 0  ]; then exit 1; fi
-        fi
-
-        if [[ $EXEMINIKUBE == 1 ]];
-        then
-            source vendor/minikube/spindown-cluster
-            if [ $? != 0  ]; then exit 1; fi
-        fi
-
-        echo >&2
-        echo "-------------------------------------------------------------------------" >&2
-        echo "Cluster torn down." >&2
-        echo "-------------------------------------------------------------------------" >&2
-        echo >&2
+        source vendor/Google/spindown-cluster
+        if [ $? != 0  ]; then exit 1; fi
     fi
+
+    if [[ $EXEMINIKUBE == 1 ]];
+    then
+        source vendor/minikube/spindown-cluster
+        if [ $? != 0  ]; then exit 1; fi
+    fi
+
+    echo >&2
+    echo "-------------------------------------------------------------------------" >&2
+    echo "Cluster torn down." >&2
+    echo "-------------------------------------------------------------------------" >&2
+    echo >&2
     exit 0
 
 else
