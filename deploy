@@ -394,7 +394,7 @@ then
     azure_option=""
     if (( $EXEAZURE == 1 ));
     then
-        if (( $DRYRUN != 1 ));
+        if (( $DRYRUN == 0 ));
         then
             ipaddr=$(\
               az network public-ip create \
@@ -406,7 +406,7 @@ then
               -o json | jq -r .publicIp.ipAddress)
             azure_option="--load-balancer-ip="${ipaddr}
         else
-            echo "ipaddr=$(az network public-ip create --name $DNS_PREFIX"-webapp-pip" --dns-name $PIP_NAME --allocation-method static --version IPv4 -g $AUTOGROUP -o json | jq -r .publicIp.ipAddress)"
+            echo "ipaddr=\$(az network public-ip create --name $DNS_PREFIX"-webapp-pip" --dns-name $PIP_NAME --allocation-method static --version IPv4 -g $AUTOGROUP -o json | jq -r .publicIp.ipAddress)"
             echo "azure_option=--load-balancer-ip=\${ipaddr}"
         fi
     fi
