@@ -110,40 +110,40 @@ function removeK8Scomponents {
         echo "Dry run - remove services"
         echo "-------------------------"
 
-        echo -n "Deleting configmap"
+        echo -n "Deleting configmap:  "
         kubectl delete configmap cowbull-config --ignore-not-found
 
-        echo -n "Deleting redis deployment"
+        echo -n "Deleting redis deployment:  "
         kubectl delete \
             -f "scripts/redis-deploy.yml" \
             --ignore-not-found
         echo
 
-        echo -n "Deleting redis service"
+        echo -n "Deleting redis service:  "
         kubectl delete \
             -f "scripts/redis-service.yml" \
             --ignore-not-found
         echo
 
-        echo -n "Deleting cowbull deployment"
+        echo -n "Deleting cowbull deployment:  "
         kubectl delete \
             -f "scripts/cowbull-deploy.yml" \
             --ignore-not-found
         echo
 
-        echo -n "Deleting cowbull service"
+        echo -n "Deleting cowbull service:  "
         kubectl delete \
             -f "scripts/cowbull-service.yml" \
             --ignore-not-found
         echo
 
-        echo -n "Deleting webapp deployment"
+        echo -n "Deleting webapp deployment:  "
         kubectl delete \
             -f "scripts/webapp-deploy.yml" \
             --ignore-not-found
         echo
 
-        echo -n "Deleting webapp service"
+        echo -n "Deleting webapp service:  "
         kubectl delete svc webapp --ignore-not-found
         echo
     else
@@ -168,27 +168,27 @@ function deployK8Scomponents {
         echo "Creating services"
         echo "-----------------"
 
-        echo "Creating configmap"
+        echo "Creating configmap:  "
         kubectl create configmap cowbull-config \
           --from-file=cowbull.cfg
 
-        echo -n "Creating redis service"
+        echo -n "Creating redis service:  "
         kubectl create -f scripts/redis-service.yml
         echo
 
-        echo -n "Creating redis deployment"
+        echo -n "Creating redis deployment:  "
         kubectl create -f scripts/redis-deploy.yml
         echo
 
-        echo -n "Creating cowbull service"
+        echo -n "Creating cowbull service:  "
         kubectl create -f scripts/cowbull-service.yml
         echo
 
-        echo -n "Creating cowbull deployment"
+        echo -n "Creating cowbull deployment:  "
         kubectl create -f scripts/cowbull-deploy.yml
         echo
 
-        echo -n "Creating webapp deployment"
+        echo -n "Creating webapp deployment:  "
         kubectl create -f scripts/webapp-deploy.yml
         echo
     else
