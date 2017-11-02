@@ -9,7 +9,7 @@ echo ""
 if [[ ! $REPLY =~ ^[Yy]$ ]]
 then
     echo "Exiting".
-    exit 0
+    return 0
 fi
 echo ""
 echo "1. Removng configuration and services"
