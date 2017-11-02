@@ -108,22 +108,22 @@ function removeK8Scomponents {
     then
         kubectl delete configmap cowbull-config --ignore-not-found
         kubectl delete \
-            -f redis-deploy.yml \
+            -f "scripts\redis-deploy.yml" \
             --ignore-not-found
         kubectl delete \
-            -f redis-service.yml \
+            -f "scripts\redis-service.yml" \
             --ignore-not-found
         kubectl delete \
-            -f cowbull-deploy.yml \
+            -f "scripts\cowbull-deploy.yml" \
             --ignore-not-found
         kubectl delete \
-            -f cowbull-service.yml \
+            -f "scripts\cowbull-service.yml" \
             --ignore-not-found
         kubectl delete \
-            -f webapp-deploy.yml \
+            -f "scripts\webapp-deploy.yml" \
             --ignore-not-found
         kubectl delete \
-            -f webapp-service.yml \
+            -f "scripts\webapp-service.yml" \
             --ignore-not-found
         kubectl delete svc webapp --ignore-not-found
     else
@@ -145,12 +145,12 @@ function deployK8Scomponents {
     if (( $DRYRUN == 0 ))
     then
         kubectl create configmap cowbull-config \
-          --from-file=cowbull.cfg
-        kubectl create -f redis-service.yml
-        kubectl create -f redis-deploy.yml
-        kubectl create -f cowbull-service.yml
-        kubectl create -f cowbull-deploy.yml
-        kubectl create -f webapp-deploy.yml
+          --from-file="scripts\cowbull.cfg"
+        kubectl create -f "scripts\redis-service.yml"
+        kubectl create -f "scripts\redis-deploy.yml"
+        kubectl create -f "scripts\cowbull-service.yml"
+        kubectl create -f "scripts\cowbull-deploy.yml"
+        kubectl create -f "scripts\webapp-deploy.yml"
     else
         echo ""
         echo "Dry run - Create services"
