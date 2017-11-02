@@ -104,36 +104,58 @@ function showHelp {
 }
 
 function removeK8Scomponents {
-    kubectl delete configmap cowbull-config --ignore-not-found
-    kubectl delete \
-        -f redis-deploy.yml \
-        --ignore-not-found
-    kubectl delete \
-        -f redis-service.yml \
-        --ignore-not-found
-    kubectl delete \
-        -f cowbull-deploy.yml \
-        --ignore-not-found
-    kubectl delete \
-        -f cowbull-service.yml \
-        --ignore-not-found
-    kubectl delete \
-        -f webapp-deploy.yml \
-        --ignore-not-found
-    kubectl delete \
-        -f webapp-service.yml \
-        --ignore-not-found
-    kubectl delete svc webapp --ignore-not-found
+    if (( $DRYRUN == 0 ))
+    then
+        kubectl delete configmap cowbull-config --ignore-not-found
+        kubectl delete \
+            -f redis-deploy.yml \
+            --ignore-not-found
+        kubectl delete \
+            -f redis-service.yml \
+            --ignore-not-found
+        kubectl delete \
+            -f cowbull-deploy.yml \
+            --ignore-not-found
+        kubectl delete \
+            -f cowbull-service.yml \
+            --ignore-not-found
+        kubectl delete \
+            -f webapp-deploy.yml \
+            --ignore-not-found
+        kubectl delete \
+            -f webapp-service.yml \
+            --ignore-not-found
+        kubectl delete svc webapp --ignore-not-found
+    else
+        echo "kubectl delete configmap cowbull-config --ignore-not-found"
+        echo "kubectl delete -f redis-deploy.yml --ignore-not-found"
+        echo "kubectl delete -f redis-service.yml --ignore-not-found"
+        echo "kubectl delete -f cowbull-deploy.yml --ignore-not-found"
+        echo "kubectl delete -f cowbull-service.yml --ignore-not-found"
+        echo "kubectl delete -f webapp-deploy.yml --ignore-not-found"
+        echo "kubectl delete -f webapp-service.yml --ignore-not-found"
+        echo "kubectl delete svc webapp --ignore-not-found"
+    fi
 }
 
 function deployK8Scomponents {
-    kubectl create configmap cowbull-config \
-      --from-file=cowbull.cfg
-    kubectl create -f redis-service.yml
-    kubectl create -f redis-deploy.yml
-    kubectl create -f cowbull-service.yml
-    kubectl create -f cowbull-deploy.yml
-    kubectl create -f webapp-deploy.yml
+    if (( $DRYRUN == 0 ))
+    then
+        kubectl create configmap cowbull-config \
+          --from-file=cowbull.cfg
+        kubectl create -f redis-service.yml
+        kubectl create -f redis-deploy.yml
+        kubectl create -f cowbull-service.yml
+        kubectl create -f cowbull-deploy.yml
+        kubectl create -f webapp-deploy.yml
+    else
+        echo "kubectl create configmap cowbull-config --from-file=cowbull.cfg"
+        echo "kubectl create -f redis-service.yml"
+        echo "kubectl create -f redis-deploy.yml"
+        echo "kubectl create -f cowbull-service.yml"
+        echo "kubectl create -f cowbull-deploy.yml"
+        echo "kubectl create -f webapp-deploy.yml"
+    fi
 }
 
 #TODO -> Use the variables to making understanding the options easier
@@ -319,13 +341,13 @@ then
     fi
 fi
 
-echo ""
-echo "Deploying Python CowBull game stack"
-echo "==================================="
-echo ""
-
 if (( $DEPLOYCLUSTER == 1 || $DEPLOYFULL == 1 ))
 then
+    echo ""
+    echo "Deploying Python CowBull game infrastructure"
+    echo "============================================"
+    echo ""
+
     if [[ $EXEAZURE == 1  ]];
     then
         source vendor/Azure/1-spinup-cluster
@@ -355,6 +377,11 @@ fi
 
 if (( $DEPLOYSERVICES == 1 || $DEPLOYFULL == 1 ))
 then
+    echo ""
+    echo "Deploying Python CowBull game configuration, pods, and services"
+    echo "==============================================================="
+    echo ""
+
     if (( $DRYRUN != 1 ));
     then
         removeK8Scomponents
