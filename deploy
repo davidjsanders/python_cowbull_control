@@ -92,12 +92,14 @@ function showHelp {
     echo " -p | --pip-name n       Specify the DNS name for the webapp public IP" >&2
     echo " -q | --quiet            Run in quiet mode supressing prompts" >&2
     echo " -r | --mini-ram         Specify the memory to be used with Minikube" >&2
-    echo " -s | --start-at n       Specify the sequence to start at: 1 (spinup cluster) or 2 (deploy services)"
     echo " -t | --machine-type g   Specify the machine type for agents" >&2
     echo " -A | --azure            Deploy to Azure" >&2
     echo " -D | --dry-run          Do NOT execute the script, simply dry run it" >&2
     echo " -G | --google           Deploy to Google" >&2
     echo " -K | --minikube         Deploy the application on minikube locally"
+    echo " -F | --deploy-all       Deploy the complete application stack"
+    echo " -S | --deploy-services  Deploy only the Kubernetes services"
+    echo " -C | --deploy-cluster   Deploy only the Kubernetes cluster with NO services"
     echo
 }
 
@@ -134,13 +136,14 @@ function deployK8Scomponents {
     kubectl create -f webapp-deploy.yml
 }
 
+#TODO -> Use the variables to making understanding the options easier
 OPTIONS=dfo:vm:
 LONGOPTIONS=debug,force,output:,verbose
 
 PARSED=$(\
   getopt \
-  --options=AGDc:r:b:s:t:p:n:qdhg:m:a:l:k \
-  --long=debug,mini-cpu:,mini-ram:,disk-size:,minikube,start-at:,pip-name:,dns-name:,machine-type:,quiet,dry-run,azure,google,group:,masters:,agents:,location: \
+  --options=ACDFGSc:r:b:t:p:n:qdhg:m:a:l:k \
+  --long=debug,deploy-cluster,deploy-all,deploy-services,mini-cpu:,mini-ram:,disk-size:,minikube,pip-name:,dns-name:,machine-type:,quiet,dry-run,azure,google,group:,masters:,agents:,location: \
   --name "Cowbull deployment script" \
   -- "$@"\
 )
@@ -170,6 +173,9 @@ START_AT=1
 DISK_SIZE=100
 MINIRAM=5192
 MINICPU=4
+DEPLOYCLUSTER=0
+DEPLOYSERVICES=0
+DEPLOYFULL=1
 
 while true; do
     case "$1" in
@@ -233,8 +239,24 @@ while true; do
             EXEGOOGLE=1
             shift
             ;;
-        -k|--minikube)
+        -K|--minikube)
             EXEMINIKUBE=1
+            shift
+            ;;
+        -C|--deploy-cluster)
+            DEPLOYCLUSTER=1
+            DEPLOYFULL=0
+            shift
+            ;;
+        -S|--deploy-services)
+            DEPLOYSERVICES=1
+            DEPLOYFULL=0
+            shift
+            ;;
+        -F|--deploy-all)
+            DEPLOYCLUSTER=0
+            DEPLOYSERVICES=0
+            DEPLOYFULL=1
             shift
             ;;
         -D|--dry-run)
@@ -297,7 +319,7 @@ then
     fi
 fi
 
-if (( $START_AT <= 1 ))
+if (( $DEPLOYCLUSTER == 1 || $DEPLOYFULL == 1 ))
 then
     if [[ $EXEAZURE == 1  ]];
     then
@@ -326,7 +348,7 @@ then
     echo >&2
 fi
 
-if (( $START_AT <= 2 ))
+if (( $DEPLOYSERVICES == 1 || $DEPLOYFULL == 1 ))
 then
     if (( $DRYRUN != 1 ));
     then
