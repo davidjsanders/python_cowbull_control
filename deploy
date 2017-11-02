@@ -406,6 +406,9 @@ then
               -o json | jq -r .publicIp.ipAddress)
             azure_option="--load-balancer-ip="${ipaddr}
         else
+            echo
+            echo "Dry run - Assign static IP to load balancer."
+            echo "--------------------------------------------"
             echo "ipaddr=\$(az network public-ip create --name $DNS_PREFIX"-webapp-pip" --dns-name $PIP_NAME --allocation-method static --version IPv4 -g $AUTOGROUP -o json | jq -r .publicIp.ipAddress)"
             echo "azure_option=--load-balancer-ip=\${ipaddr}"
         fi
