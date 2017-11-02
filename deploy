@@ -100,6 +100,7 @@ function showHelp {
     echo " -F | --deploy-all       Deploy the complete application stack"
     echo " -S | --deploy-services  Deploy only the Kubernetes services"
     echo " -C | --deploy-cluster   Deploy only the Kubernetes cluster with NO services"
+    echo " -T | --tear-down        Tear down the K8S services and the cluster"
     echo
 }
 
@@ -212,8 +213,8 @@ LONGOPTIONS=debug,force,output:,verbose
 
 PARSED=$(\
   getopt \
-  --options=ACDFGSc:r:b:t:p:n:qdhg:m:a:l:k \
-  --long=debug,deploy-cluster,deploy-all,deploy-services,mini-cpu:,mini-ram:,disk-size:,minikube,pip-name:,dns-name:,machine-type:,quiet,dry-run,azure,google,group:,masters:,agents:,location: \
+  --options=ACDFGSTc:r:b:t:p:n:qdhg:m:a:l:k \
+  --long=debug,tear-down,deploy-cluster,deploy-all,deploy-services,mini-cpu:,mini-ram:,disk-size:,minikube,pip-name:,dns-name:,machine-type:,quiet,dry-run,azure,google,group:,masters:,agents:,location: \
   --name "Cowbull deployment script" \
   -- "$@"\
 )
@@ -246,6 +247,7 @@ MINICPU=4
 DEPLOYCLUSTER=0
 DEPLOYSERVICES=0
 DEPLOYFULL=1
+TEARDOWN=0
 
 while true; do
     case "$1" in
@@ -329,6 +331,10 @@ while true; do
             DEPLOYFULL=1
             shift
             ;;
+        -T|--tear-down)
+            TEARDOWN=1
+            shift
+            ;;
         -D|--dry-run)
             DRYRUN=1
             shift
@@ -354,9 +360,17 @@ while true; do
     esac
 done
 
-echo >&2
-echo "Deploying Python Cowbull suite with the following options:" >&2
-echo "----------------------------------------------------------" >&2
+if (( $TEARDOWN == 1 ))
+then
+    echo >&2
+    echo "Tearing down the Python Cowbull suite with the following options:" >&2
+    echo "-----------------------------------------------------------------" >&2
+else
+    echo >&2
+    echo "Deploying Python Cowbull suite with the following options:" >&2
+    echo "----------------------------------------------------------" >&2
+fi
+
 if [[ $DEBUG == 1 ]] ;
 then
     echo "" >&2
@@ -387,6 +401,12 @@ then
         echo >&2
         exit 0
     fi
+fi
+
+if (( $TEARDOWN == 1 ))
+then
+    echo "Doing tear down"
+    exit 0
 fi
 
 if (( $DEPLOYCLUSTER == 1 || $DEPLOYFULL == 1 ))
