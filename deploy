@@ -405,81 +405,145 @@ fi
 
 if (( $TEARDOWN == 1 ))
 then
-    echo "Doing tear down"
-    exit 0
-fi
-
-if (( $DEPLOYCLUSTER == 1 || $DEPLOYFULL == 1 ))
-then
     echo ""
-    echo "Deploying Python CowBull game infrastructure"
-    echo "============================================"
+    echo "Tearing down Python CowBull game"
+    echo "================================"
     echo ""
-
-    if [[ $EXEAZURE == 1  ]];
+    if (( $DEPLOYSERVICES == 1 || $DEPLOYFULL == 1 ))
     then
-        source vendor/Azure/1-spinup-cluster
-        if [ $? != 0  ]; then exit 1; fi
-    fi
+        echo ""
+        echo "Tearing down Python CowBull game configuration, pods, and services"
+        echo "=================================================================="
+        echo ""
 
-    if [[ $EXEGOOGLE == 1 ]];
-    then
-        source vendor/Google/1-spinup-cluster
-        if [ $? != 0  ]; then exit 1; fi
-    fi
+        removeK8Scomponents
 
-    if [[ $EXEMINIKUBE == 1 ]];
-    then
-        source vendor/minikube/1-spinup-cluster
-        if [ $? != 0  ]; then exit 1; fi
-    fi
-
-    echo >&2
-    echo "-------------------------------------------------------------------------" >&2
-    echo "Cluster ready." >&2
-    echo "-------------------------------------------------------------------------" >&2
-    echo >&2
-    showConfig
-    echo >&2
-fi
-
-if (( $DEPLOYSERVICES == 1 || $DEPLOYFULL == 1 ))
-then
-    echo ""
-    echo "Deploying Python CowBull game configuration, pods, and services"
-    echo "==============================================================="
-    echo ""
-
-    removeK8Scomponents
-    deployK8Scomponents
-
-    azure_option=""
-    if (( $EXEAZURE == 1 ));
-    then
-        if (( $DRYRUN == 0 ));
+        if (( $EXEAZURE == 1 ));
         then
-            ipaddr=$(\
-              az network public-ip create \
-              --name $DNS_PREFIX"-webapp-pip" \
-              --dns-name $PIP_NAME \
-              --allocation-method static \
-              --version IPv4 \
-              -g $AUTOGROUP \
-              -o json | jq -r .publicIp.ipAddress)
-            azure_option="--load-balancer-ip="${ipaddr}
-        else
-            echo
-            echo "Dry run - Assign static IP to load balancer."
-            echo "--------------------------------------------"
-            echo "ipaddr=\$(az network public-ip create --name $DNS_PREFIX"-webapp-pip" --dns-name $PIP_NAME --allocation-method static --version IPv4 -g $AUTOGROUP -o json | jq -r .publicIp.ipAddress)"
-            echo "azure_option=--load-balancer-ip=\${ipaddr}"
+            if (( $DRYRUN == 0 ));
+            then
+                az network public-ip delete --name $DNS_PREFIX"-webapp-pip" -g $AUTOGROUP
+            else
+                echo
+                echo "Dry run - Assign static IP to load balancer."
+                echo "--------------------------------------------"
+                echo "az network public-ip delete --name $DNS_PREFIX-webapp-pip -g $AUTOGROUP"
+            fi
         fi
+
+        echo >&2
+        echo "-------------------------------------------------------------------------" >&2
+        echo "Services torn down." >&2
+        echo "-------------------------------------------------------------------------" >&2
+        echo >&2
     fi
 
-    if (( $DRYRUN != 1 ));
+    if (( $DEPLOYCLUSTER == 1 || $DEPLOYFULL == 1 ))
     then
-        echo "Creating webapp service"
-        kubectl expose deployment webapp --type=LoadBalancer $azure_option
+        echo ""
+        echo "Tearing down Python CowBull game infrastructure"
+        echo "==============================================="
+        echo ""
+
+        if [[ $EXEAZURE == 1  ]];
+        then
+            source vendor/Azure/spindown-cluster
+            if [ $? != 0  ]; then exit 1; fi
+        fi
+
+        if [[ $EXEGOOGLE == 1 ]];
+        then
+            source vendor/Google/spindown-cluster
+            if [ $? != 0  ]; then exit 1; fi
+        fi
+
+        if [[ $EXEMINIKUBE == 1 ]];
+        then
+            source vendor/minikube/spindown-cluster
+            if [ $? != 0  ]; then exit 1; fi
+        fi
+
+        echo >&2
+        echo "-------------------------------------------------------------------------" >&2
+        echo "Cluster torn down." >&2
+        echo "-------------------------------------------------------------------------" >&2
+        echo >&2
+    fi
+    exit 0
+
+else
+    if (( $DEPLOYCLUSTER == 1 || $DEPLOYFULL == 1 ))
+    then
+        echo ""
+        echo "Deploying Python CowBull game infrastructure"
+        echo "============================================"
+        echo ""
+
+        if [[ $EXEAZURE == 1  ]];
+        then
+            source vendor/Azure/spinup-cluster
+            if [ $? != 0  ]; then exit 1; fi
+        fi
+
+        if [[ $EXEGOOGLE == 1 ]];
+        then
+            source vendor/Google/spinup-cluster
+            if [ $? != 0  ]; then exit 1; fi
+        fi
+
+        if [[ $EXEMINIKUBE == 1 ]];
+        then
+            source vendor/minikube/spinup-cluster
+            if [ $? != 0  ]; then exit 1; fi
+        fi
+
+        echo >&2
+        echo "-------------------------------------------------------------------------" >&2
+        echo "Cluster ready." >&2
+        echo "-------------------------------------------------------------------------" >&2
+        echo >&2
+        showConfig
+        echo >&2
+    fi
+
+    if (( $DEPLOYSERVICES == 1 || $DEPLOYFULL == 1 ))
+    then
+        echo ""
+        echo "Deploying Python CowBull game configuration, pods, and services"
+        echo "==============================================================="
+        echo ""
+
+        removeK8Scomponents
+        deployK8Scomponents
+
+        azure_option=""
+        if (( $EXEAZURE == 1 ));
+        then
+            if (( $DRYRUN == 0 ));
+            then
+                ipaddr=$(\
+                  az network public-ip create \
+                  --name $DNS_PREFIX"-webapp-pip" \
+                  --dns-name $PIP_NAME \
+                  --allocation-method static \
+                  --version IPv4 \
+                  -g $AUTOGROUP \
+                  -o json | jq -r .publicIp.ipAddress)
+                azure_option="--load-balancer-ip="${ipaddr}
+            else
+                echo
+                echo "Dry run - Assign static IP to load balancer."
+                echo "--------------------------------------------"
+                echo "ipaddr=\$(az network public-ip create --name $DNS_PREFIX"-webapp-pip" --dns-name $PIP_NAME --allocation-method static --version IPv4 -g $AUTOGROUP -o json | jq -r .publicIp.ipAddress)"
+                echo "azure_option=--load-balancer-ip=\${ipaddr}"
+            fi
+        fi
+
+        if (( $DRYRUN != 1 ));
+        then
+            echo "Creating webapp service"
+            kubectl expose deployment webapp --type=LoadBalancer $azure_option
+        fi
     fi
 fi
 
