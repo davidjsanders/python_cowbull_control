@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+echo ""
+echo "Step 1. Stop minikube"
+minikube stop
+echo ""
+echo "Done."
+echo ""

@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+echo ""
+echo "Step 1. Deleting resource group (no wait specified) "$rg
+az group delete --name $rg --yes --no-wait
+echo ""
+echo "Step 2. Reset controls to minikube"
+kubectl config use-context minikube
+echo ""
+echo "Done."
+echo ""
