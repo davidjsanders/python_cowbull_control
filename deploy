@@ -127,6 +127,9 @@ function removeK8Scomponents {
             --ignore-not-found
         kubectl delete svc webapp --ignore-not-found
     else
+        echo ""
+        echo "Dry run - remove services"
+        echo "-------------------------"
         echo "kubectl delete configmap cowbull-config --ignore-not-found"
         echo "kubectl delete -f redis-deploy.yml --ignore-not-found"
         echo "kubectl delete -f redis-service.yml --ignore-not-found"
@@ -149,6 +152,9 @@ function deployK8Scomponents {
         kubectl create -f cowbull-deploy.yml
         kubectl create -f webapp-deploy.yml
     else
+        echo ""
+        echo "Dry run - Create services"
+        echo "-------------------------"
         echo "kubectl create configmap cowbull-config --from-file=cowbull.cfg"
         echo "kubectl create -f redis-service.yml"
         echo "kubectl create -f redis-deploy.yml"
