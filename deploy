@@ -112,6 +112,7 @@ function removeK8Scomponents {
 
         echo -n "Deleting configmap:  "
         kubectl delete configmap cowbull-config --ignore-not-found
+        echo
 
         echo -n "Deleting redis deployment:  "
         kubectl delete \
@@ -171,6 +172,7 @@ function deployK8Scomponents {
         echo "Creating configmap:  "
         kubectl create configmap cowbull-config \
           --from-file=cowbull.cfg
+        echo
 
         echo -n "Creating redis service:  "
         kubectl create -f scripts/redis-service.yml
