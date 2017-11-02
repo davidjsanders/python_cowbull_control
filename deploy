@@ -104,6 +104,7 @@ function showHelp {
 }
 
 function removeK8Scomponents {
+    echo "DRYRUN == $DRYRUN"
     if (( $DRYRUN == 0 ))
     then
         kubectl delete configmap cowbull-config --ignore-not-found
@@ -139,6 +140,7 @@ function removeK8Scomponents {
 }
 
 function deployK8Scomponents {
+    echo "DRYRUN == $DRYRUN"
     if (( $DRYRUN == 0 ))
     then
         kubectl create configmap cowbull-config \
