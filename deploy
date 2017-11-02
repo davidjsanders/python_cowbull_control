@@ -384,11 +384,8 @@ then
     echo "==============================================================="
     echo ""
 
-    if (( $DRYRUN != 1 ));
-    then
-        removeK8Scomponents
-        deployK8Scomponents
-    fi
+    removeK8Scomponents
+    deployK8Scomponents
 
     azure_option=""
     if (( $EXEAZURE == 1 ));
@@ -404,6 +401,9 @@ then
               -g $AUTOGROUP \
               -o json | jq -r .publicIp.ipAddress)
             azure_option="--load-balancer-ip="${ipaddr}
+        else
+            echo "ipaddr=$(az network public-ip create --name $DNS_PREFIX"-webapp-pip" --dns-name $PIP_NAME --allocation-method static --version IPv4 -g $AUTOGROUP -o json | jq -r .publicIp.ipAddress)"
+            echo "azure_option=--load-balancer-ip=\${ipaddr}"
         fi
     fi
 
