@@ -145,12 +145,12 @@ function deployK8Scomponents {
     if (( $DRYRUN == 0 ))
     then
         kubectl create configmap cowbull-config \
-          --from-file="scripts/cowbull.cfg"
-        kubectl create -f "scripts/redis-service.yml"
-        kubectl create -f "scripts/redis-deploy.yml"
-        kubectl create -f "scripts/cowbull-service.yml"
-        kubectl create -f "scripts/cowbull-deploy.yml"
-        kubectl create -f "scripts/webapp-deploy.yml"
+          --from-file=cowbull.cfg
+        kubectl create -f scripts/redis-service.yml
+        kubectl create -f scripts/redis-deploy.yml
+        kubectl create -f scripts/cowbull-service.yml
+        kubectl create -f scripts/cowbull-deploy.yml
+        kubectl create -f scripts/webapp-deploy.yml
     else
         echo ""
         echo "Dry run - Create services"
