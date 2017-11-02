@@ -97,19 +97,6 @@ echo "  ok   |"
 echo "|------------------------------------|--------| "
 echo ""
 echo ""
-echo "Configuration will be set as follows:"
-echo "-------------------------------------"
-echo ""
-echo "resource group:   "$GROUP
-echo "cluster name  :   "$CLUSTER
-echo "master count  :   "$MASTER_COUNT
-echo "agent count   :   "$AGENT_COUNT
-echo "location      :   "$LOCATION
-echo "machine type  :   "$MACHINE_TYPE
-echo "dns prefix    :   "$DNS_PREFIX
-echo "cowbull dns   :   "$PIP_NAME"."$DNS_PREFIX"."$LOCATION".cloudapp.azure.com"
-echo "private key   :   "$KEYFILE
-echo ""
 
 if [[ $DRYRUN == 1  ]]
 then
