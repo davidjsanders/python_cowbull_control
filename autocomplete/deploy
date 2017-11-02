@@ -6,8 +6,9 @@ _deploy()
     prev="${COMP_WORDS[COMP_CWORD-1]}"
     opts="-a --agents -b --disk-size -c --mini-cpu -d --debug -g --group -h --help"
     opts=$opts" -l --location -m --masters -n --dns-name -p --pip-name"
-    opts=$opts" -q --quiet -r --mini-ram -s --start-at -t --machine-type -A --azure"
+    opts=$opts" -q --quiet -r --mini-ram -t --machine-type -A --azure"
     opts=$opts" -G --google -K --minikube -D --dry-run"
+    opts=$opts" -F --deploy-all -S --deploy-services -C --deploy-cluster"
 
     if [[ ${cur} == -* ]] ; then
         COMPREPLY=( $(compgen -W "${opts}" -- ${cur}) )
