@@ -40,7 +40,7 @@ echo "  ok   |"
 
 echo -n "| Minikube current status            | "
 minikubeStatus=$(minikube status --format "{{.MinikubeStatus}}" | tr [A-Z] [a-z])
-if [[ $minikubeStatus != "x" ]]
+if [[ $minikubeStatus == "running" ]]
 then
     echo "started|"
 else
