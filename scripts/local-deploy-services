@@ -15,22 +15,22 @@ echo ""
 echo "1. Remove any existing configuration and services"
 kubectl delete configmap cowbull-config --ignore-not-found
 kubectl delete \
-    -f redis-deploy.yml \
+    -f scripts/redis-deploy.yml \
     --ignore-not-found
 kubectl delete \
-    -f redis-service.yml \
+    -f scripts/redis-service.yml \
     --ignore-not-found
 kubectl delete \
-    -f cowbull-deploy.yml \
+    -f scripts/cowbull-deploy.yml \
     --ignore-not-found
 kubectl delete \
-    -f cowbull-service.yml \
+    -f scripts/cowbull-service.yml \
     --ignore-not-found
 kubectl delete \
-    -f webapp-deploy.yml \
+    -f scripts/webapp-deploy.yml \
     --ignore-not-found
 kubectl delete \
-    -f webapp-service.yml \
+    -f scripts/webapp-service.yml \
     --ignore-not-found
 echo ""
 echo "2. Create configuration map"
@@ -38,15 +38,15 @@ kubectl create configmap cowbull-config \
   --from-file=cowbull.cfg
 echo ""
 echo "3. Deploy Redis"
-kubectl create -f redis-service.yml
-kubectl create -f redis-deploy.yml
+kubectl create -f scripts/redis-service.yml
+kubectl create -f scripts/redis-deploy.yml
 echo ""
 echo "4. Deploy CowBull"
-kubectl create -f cowbull-service.yml
-kubectl create -f cowbull-deploy.yml
+kubectl create -f scripts/cowbull-service.yml
+kubectl create -f scripts/cowbull-deploy.yml
 echo ""
 echo "5. Deploy CowBull web app"
-kubectl create -f webapp-deploy.yml
+kubectl create -f scripts/webapp-deploy.yml
 kubectl expose deployment webapp --type=LoadBalancer
 echo ""
 echo "Done."

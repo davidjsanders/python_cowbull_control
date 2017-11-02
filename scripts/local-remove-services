@@ -15,19 +15,19 @@ echo ""
 echo "1. Removng configuration and services"
 kubectl delete configmap cowbull-config --ignore-not-found
 kubectl delete \
-    -f redis-deploy.yml \
+    -f scripts/redis-deploy.yml \
     --ignore-not-found
 kubectl delete \
-    -f redis-service.yml \
+    -f scripts/redis-service.yml \
     --ignore-not-found
 kubectl delete \
-    -f cowbull-deploy.yml \
+    -f scripts/cowbull-deploy.yml \
     --ignore-not-found
 kubectl delete \
-    -f cowbull-service.yml \
+    -f scripts/cowbull-service.yml \
     --ignore-not-found
 kubectl delete \
-    -f webapp-deploy.yml \
+    -f scripts/webapp-deploy.yml \
     --ignore-not-found
 echo ""
 echo "2. Remove CowBull web app and network interfaces."
