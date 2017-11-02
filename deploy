@@ -106,25 +106,39 @@ function showHelp {
 function removeK8Scomponents {
     if (( $DRYRUN == 0 ))
     then
+        echo ""
+        echo "Dry run - remove services"
+        echo "-------------------------"
+
+        echo "Deleting configmap"
         kubectl delete configmap cowbull-config --ignore-not-found
+
+        echo "Deleting redis deployment"
         kubectl delete \
             -f "scripts/redis-deploy.yml" \
             --ignore-not-found
+
+        echo "Deleting redis service"
         kubectl delete \
             -f "scripts/redis-service.yml" \
             --ignore-not-found
+
+        echo "Deleting cowbull deployment"
         kubectl delete \
             -f "scripts/cowbull-deploy.yml" \
             --ignore-not-found
+
+        echo "Deleting cowbull service"
         kubectl delete \
             -f "scripts/cowbull-service.yml" \
             --ignore-not-found
+
+        echo "Deleting webapp deployment"
         kubectl delete \
             -f "scripts/webapp-deploy.yml" \
             --ignore-not-found
-        kubectl delete \
-            -f "scripts/webapp-service.yml" \
-            --ignore-not-found
+
+        echo "Deleting webapp service"
         kubectl delete svc webapp --ignore-not-found
     else
         echo ""
@@ -144,12 +158,23 @@ function removeK8Scomponents {
 function deployK8Scomponents {
     if (( $DRYRUN == 0 ))
     then
+        echo ""
+        echo "Creating services"
+        echo "-----------------"
+
+        echo "Creating configmap"
         kubectl create configmap cowbull-config \
           --from-file=cowbull.cfg
+
+        echo "Creating redis service"
         kubectl create -f scripts/redis-service.yml
+        echo "Creating redis deployment"
         kubectl create -f scripts/redis-deploy.yml
+        echo "Creating cowbull service"
         kubectl create -f scripts/cowbull-service.yml
+        echo "Creating cowbull deployment"
         kubectl create -f scripts/cowbull-deploy.yml
+        echo "Creating webapp deployment"
         kubectl create -f scripts/webapp-deploy.yml
     else
         echo ""
@@ -416,6 +441,7 @@ then
 
     if (( $DRYRUN != 1 ));
     then
+        echo "Creating webapp service"
         kubectl expose deployment webapp --type=LoadBalancer $azure_option
     fi
 fi
