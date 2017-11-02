@@ -319,6 +319,11 @@ then
     fi
 fi
 
+echo ""
+echo "Deploying Python CowBull game stack"
+echo "==================================="
+echo ""
+
 if (( $DEPLOYCLUSTER == 1 || $DEPLOYFULL == 1 ))
 then
     if [[ $EXEAZURE == 1  ]];

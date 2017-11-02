@@ -4,8 +4,8 @@
 #
 #
 echo ""
-echo "Deploy CowBull game to Kubernetes cluster running on GKE"
-echo "========================================================"
+echo "Deploy to Google Container Engine"
+echo "================================="
 echo ""
 echo "|------------------------------------|--------| "
 echo "| Validate environment               | Status |"

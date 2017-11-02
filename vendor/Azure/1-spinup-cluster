@@ -4,8 +4,8 @@
 #
 #
 echo ""
-echo "Deploy CowBull game to Kubernetes cluster running on Azure"
-echo "=========================================================="
+echo "Deploy to Azure Kubernete Services"
+echo "=================================="
 echo ""
 echo "|------------------------------------|--------| "
 echo "| Validate environment               | Status |"

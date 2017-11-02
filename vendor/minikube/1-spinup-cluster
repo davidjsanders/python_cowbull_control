@@ -4,8 +4,8 @@
 #
 #
 echo ""
-echo "Deploy CowBull game to Kubernetes cluster run locally on Minikube"
-echo "================================================================="
+echo "Deploy to local machine on Minikube"
+echo "==================================="
 echo ""
 echo "|------------------------------------|--------| "
 echo "| Validate environment               | Status |"
