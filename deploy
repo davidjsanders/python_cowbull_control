@@ -7,8 +7,8 @@ USAGE_STRING=$USAGE_STRING" [-r|--mini-ram ram (Minikube only)] [-t|--machine-ty
 
 source scripts/v2/showHelp.sh
 source scripts/v2/showInfo.sh
-source scripts/v2/removeK8Scomponents.sh
-source scripts/v2/deployK8Scomponents.sh
+source scripts/v2/removeK8SComponents.sh
+source scripts/v2/deployK8SComponents.sh
 source scripts/v2/showConfig.sh
 
 
