@@ -72,6 +72,6 @@ function showConfigMinikube1 {
     echo
     echo "Deploy to Minikube Parameters" >&2
     echo "-----------------------------" >&2
-    echo "Minikube CPU allocation        : "${MINICPU} >&2
-    echo "Minikube RAM allocation        : "${MINIRAM} >&2
+    echo "Minikube CPU allocation        : "${MINICPU}" (Modify with --mini-cpu)" >&2
+    echo "Minikube RAM allocation        : "${MINIRAM}" (Modify with --mini-ram)" >&2
 }
