@@ -45,8 +45,8 @@ function showConfigAzure0 {
 
 function showConfigAzure1 {
     echo
-    echo "Deploy to Azure                : selected" >&2
-    echo "_______________________________________________________________________"
+    echo "Deploy to Azure Parameters" >&2
+    echo "--------------------------" >&2
     echo "Group name                     : "${GROUP} >&2
     echo "Cluster name                   : "${CLUSTER} >&2
     echo "Auto group name                : "${AUTOGROUP} >&2
@@ -63,8 +63,8 @@ function showConfigGoogle0 {
 
 function showConfigGoogle1 {
     echo
-    echo "Deploy to Google               : selected" >&2
-    echo "_______________________________________________________________________"
+    echo "Deploy to Google Parameters" >&2
+    echo "---------------------------" >&2
     echo "Cluster name                   : "${CLUSTER} >&2
     echo "Google zone (location)         : "${LOCATION} >&2
     echo "Agent disk size                : "${DISK_SIZE} >&2
@@ -78,8 +78,8 @@ function showConfigMinikube0 {
 
 function showConfigMinikube1 {
     echo
-    echo "Deploy to Minikube             : selected" >&2
-    echo "_______________________________________________________________________"
+    echo "Deploy to Minikube Parameters" >&2
+    echo "-----------------------------" >&2
     echo "Minikube CPU allocation        : "${MINICPU} >&2
     echo "Minikube RAM allocation        : "${MINIRAM} >&2
 }
