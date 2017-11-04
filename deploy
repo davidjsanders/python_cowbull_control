@@ -1,16 +1,12 @@
 #!/usr/bin/env bash
-function showInfo {
-    HELPTEXT="Python Cowbull Game: deploy (BASH shell script)\n"
-    HELPTEXT=${HELPTEXT}"===============================================\n\n"
-    HELPTEXT=${HELPTEXT}"The python cowbull game is a set of microservices which support the playing of "
-    HELPTEXT=${HELPTEXT}"a Cow Bull game (secret numbers, user guesses, and status of hits - Bull is a "
-    HELPTEXT=${HELPTEXT}"right number in the right place, Cow is a right number in the wrong place."
-    HELPTEXT=${HELPTEXT}"\n\n"
-    HELPTEXT=${HELPTEXT}"This script (deploy) takes a nunmber of parameters as follows:\n"
-    echo >&2
-    echo -e $HELPTEXT >&2
-    echo >&2
-}
+USAGE_STRING="usage: deploy [-abcdghlmnpqrtADGKFSCT] [-a|--agents agent count] [-b|--disk-size disk size (Google only)]"
+USAGE_STRING=$USAGE_STRING" [-c|--mini-cpu number of cpus (Minikube only)] [-g|--group group name] "
+USAGE_STRING=$USAGE_STRING" [-l|--location location (Azure location/Google zone)] [-m|--masters master count (deprecated)]"
+USAGE_STRING=$USAGE_STRING" [-n|--dns-name dns name] [-p|--pip-name public IP name] "
+USAGE_STRING=$USAGE_STRING" [-r|--mini-ram ram (Minikube only)] [-t|--machine-type machine type (Azure and Google)]"
+
+source scripts/v2/showHelp.sh
+source scripts/v2/showInfo.sh
 
 function showConfigAzure0 {
     :
@@ -75,33 +71,6 @@ function showConfig {
         echo "no" >&2
     fi
     echo >&2
-}
-
-function showHelp {
-    echo >&2
-    echo "deploy --..." >&2
-    echo " -a | --agents x         Specify the number of K8S agents" >&2
-    echo " -b | --disk-size        Specify the disk size (for Google only)" >&2
-    echo " -c | --mini-cpu         Specify the number of CPUs to allow Minikube to consume"
-    echo " -d | --debug            Use debug mode" >&2
-    echo " -g | --group g          Specify the resource group" >&2
-    echo " -h | --help             Display this message" >&2
-    echo " -l | --location l       Specify the location for the resource group" >&2
-    echo " -m | --masters x        Specify the number of K8S masters" >&2
-    echo " -n | --dns-name n       Specify the DNS prefix name" >&2
-    echo " -p | --pip-name n       Specify the DNS name for the webapp public IP" >&2
-    echo " -q | --quiet            Run in quiet mode supressing prompts" >&2
-    echo " -r | --mini-ram         Specify the memory to be used with Minikube" >&2
-    echo " -t | --machine-type g   Specify the machine type for agents" >&2
-    echo " -A | --azure            Deploy to Azure" >&2
-    echo " -D | --dry-run          Do NOT execute the script, simply dry run it" >&2
-    echo " -G | --google           Deploy to Google" >&2
-    echo " -K | --minikube         Deploy the application on minikube locally"
-    echo " -F | --deploy-all       Deploy the complete application stack"
-    echo " -S | --deploy-services  Deploy only the Kubernetes services"
-    echo " -C | --deploy-cluster   Deploy only the Kubernetes cluster with NO services"
-    echo " -T | --tear-down        Tear down the K8S services and the cluster"
-    echo
 }
 
 function removeK8Scomponents {
