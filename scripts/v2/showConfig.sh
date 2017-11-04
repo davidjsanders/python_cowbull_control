@@ -29,6 +29,7 @@ function showConfig {
     echo "Quiet mode                     : "${QUIET} >&2
     echo "Start execution at stage       : "${START_AT} >&2
     echo -n "Dry run?                       : " >&2
+
     if [[ $DRYRUN == 1  ]];
     then
         echo "yes" >&2
@@ -81,11 +82,4 @@ function showConfigMinikube1 {
     echo "_______________________________________________________________________"
     echo "Minikube CPU allocation        : "${MINICPU} >&2
     echo "Minikube RAM allocation        : "${MINIRAM} >&2
-}
-
-function showConfig {
-    showConfigAzure$EXEAZURE
-    showConfigGoogle$EXEGOOGLE
-    showConfigMinikube$EXEMINIKUBE
-
 }
