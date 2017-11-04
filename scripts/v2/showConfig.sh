@@ -38,7 +38,7 @@ function showConfig {
     echo >&2
 }
 
-function showConfigGoogle0 {
+function showConfigAzure0 {
     :
 }
 
