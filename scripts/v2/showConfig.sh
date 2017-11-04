@@ -24,18 +24,10 @@ function showConfig {
     echo "General Parameters" >&2
     echo "------------------" >&2
     echo "SSH Key file                   : "${KEYFILE} >&2
-    echo
-    echo "Debug status                   : "${DEBUG} >&2
-    echo "Quiet mode                     : "${QUIET} >&2
-    echo "Start execution at stage       : "${START_AT} >&2
-    echo -n "Dry run?                       : " >&2
 
-    if [[ $DRYRUN == 1  ]];
-    then
-        echo "yes" >&2
-    else
-        echo "no" >&2
-    fi
+    echo -n "Dry run?                       : " >&2
+    if [[ $DRYRUN == 1  ]]; then echo "yes" >&2; else echo "no" >&2; fi
+
     echo >&2
 }
 
