@@ -1,10 +1,7 @@
 #!/usr/bin/env bash
-USAGE_STRING="usage: deploy [-abcdghlmnpqrtADGKFSCT] [-a|--agents agent count] [-b|--disk-size disk size (Google only)]"
-USAGE_STRING=$USAGE_STRING" [-c|--mini-cpu number of cpus (Minikube only)] [-g|--group group name] "
-USAGE_STRING=$USAGE_STRING" [-l|--location location (Azure location/Google zone)] [-m|--masters master count (deprecated)]"
-USAGE_STRING=$USAGE_STRING" [-n|--dns-name dns name] [-p|--pip-name public IP name] "
-USAGE_STRING=$USAGE_STRING" [-r|--mini-ram ram (Minikube only)] [-t|--machine-type machine type (Azure and Google)]"
-
+#
+# 1. Load source modules
+#
 source scripts/v2/showHelp.sh
 source scripts/v2/showInfo.sh
 source scripts/v2/removeK8SComponents.sh
@@ -13,202 +10,113 @@ source scripts/v2/showConfig.sh
 source scripts/v2/deployInfrastructure.sh
 source scripts/v2/deployServices.sh
 source scripts/v2/tearDown.sh
+source scripts/v2/parseArgs.sh
+source scripts/v2/processArgument.sh
+source scripts/v2/showTeardown.sh
+source scripts/v2/showSpinup.sh
+source scripts/v2/processContinue.sh
+source scripts/v2/setDefaults.sh
 
+#
+# 2. Set defaults and initialize variables
+#
+setDefaults
 
-#TODO -> Use the variables to making understanding the options easier
-OPTIONS=dfo:vm:
-LONGOPTIONS=debug,force,output:,verbose
-
-PARSED=$(\
-  getopt \
-  --options=ACDFGSTc:r:b:t:p:n:qdhg:m:a:l:k \
-  --long=debug,tear-down,deploy-cluster,deploy-all,deploy-services,mini-cpu:,mini-ram:,disk-size:,minikube,pip-name:,dns-name:,machine-type:,quiet,dry-run,azure,google,group:,masters:,agents:,location: \
-  --name "Cowbull deployment script" \
-  -- "$@"\
-)
-
+#
+# 3. Parse command line arguments
+#
+parseArgs
 if [ $? != 0 ];
 then
     showHelp
     exit 1
 fi
 
-EXEAZURE=0
-EXEGOOGLE=0
-EXEMINIKUBE=0
-DATEFILL=$(date +"%m%d%y")
-GROUP="k8"${DATEFILL}"RG"
-MASTER_COUNT=1
-AGENT_COUNT=1
-LOCATION="westus2"
-MACHINE_TYPE="Standard_A2"
-DNS_PREFIX="dnsprefix"
-PIP_NAME="cowbull_webapp"
-DEBUG=0
-DRYRUN=0
-KEYFILE=~/.ssh/id_rsa
-QUIET=0
-START_AT=1
-DISK_SIZE=100
-MINIRAM=5192
-MINICPU=4
-DEPLOYCLUSTER=0
-DEPLOYSERVICES=0
-DEPLOYFULL=1
-TEARDOWN=0
-
+#
+# 4. Process each argument, validate it, and act on it.
+#
 while true; do
-    case "$1" in
-        -h|--help)
-            showHelp
-            exit 1
-            ;;
-        -s|--start-at)
-            START_AT=$2
-            shift 2
-            ;;
-        -b|--disk-size)
-            DISK_SIZE=$2
-            shift 2
-            ;;
-        -q|--quiet)
-            QUIET=1
-            shift
-            ;;
-        -p|--pip-name)
-            PIP_NAME=$2
-            shift 2
-            ;;
-        -r|--mini-ram)
-            MINIRAM=$2
-            shift 2
-            ;;
-        -c|--mini-cpu)
-            MINICPU=$2
-            shift 2
-            ;;
-        -n|--dns-name)
-            DNS_PREFIX=$2
-            shift 2
-            ;;
-        -t|--machine-type)
-            MACHINE_TYPE=$2
-            shift 2
-            ;;
-        -l|--location)
-            LOCATION=$2
-            shift 2
-            ;;
-        -m|--masters)
-            MASTER_COUNT=$2
-            shift 2
-            ;;
-        -a|--agents)
-            AGENT_COUNT=$2
-            shift 2
-            ;;
-        -d|--debug)
-            DEBUG=1
-            shift
-            ;;
-        -A|--azure)
-            EXEAZURE=1
-            shift
-            ;;
-        -G|--google)
-            EXEGOOGLE=1
-            shift
-            ;;
-        -K|--minikube)
-            EXEMINIKUBE=1
-            shift
-            ;;
-        -C|--deploy-cluster)
-            DEPLOYCLUSTER=1
-            DEPLOYFULL=0
-            shift
-            ;;
-        -S|--deploy-services)
-            DEPLOYSERVICES=1
-            DEPLOYFULL=0
-            shift
-            ;;
-        -F|--deploy-all)
-            DEPLOYCLUSTER=0
-            DEPLOYSERVICES=0
-            DEPLOYFULL=1
-            shift
-            ;;
-        -T|--tear-down)
-            TEARDOWN=1
-            shift
-            ;;
-        -D|--dry-run)
-            DRYRUN=1
-            shift
-            ;;
-        -g|--group)
-            GROUP=$2
-            shift 2
-            ;;
-        --|\ )
-            shift
-            break
-            ;;
-        \?)
-            shift
-            ;;
-        *)
-            if [[ $1"X" != "X" ]];
-            then
-                echo "Unexpected argument: ${1}"
-            fi
-            break
-            ;;
-    esac
+    processArgument $1 $2
+    return_status=$?
+    if (( $return_status == 1 ))
+    then
+        echo >&2
+        echo "ERROR: "${ERROR_TEXT} >&2
+        echo "       Cannot continue." >&2
+        echo "       deploy --help to show command line options" >&2
+        echo >&2
+        exit $?
+    elif (( $return_status == 2 ))
+    then
+        exit 0
+    elif (( $return_status == 3 ))
+    then
+        break
+    fi
+    shift $SHIFT_AMOUNT
 done
 
-echo >&2
-echo "|------------------------------------------------------------------|" >&2
+#
+# 5. Show the welcome message. Differs based on tear down or instantiate
+#    actions.
+#
 if (( $TEARDOWN == 1 ))
 then
-    echo "|                                                                  |" >&2
-    echo "| Tearing down the Python Cowbull suite with the following options |" >&2
-    echo "|                                                                  |" >&2
-    echo "| WARNING! WARNING! WARNING!                                       |" >&2
-    echo "| !! This step cannot be cancelled or reverted !!                  |" >&2
-    echo "|                                                                  |" >&2
+    showTeardown
 else
-    echo "| Deploying Python Cowbull suite with the following options        |" >&2
+    showSpinup
 fi
-echo "|------------------------------------------------------------------|" >&2
 
+#
+# 6. Compute specific variable for Azure
+#
 CLUSTER=${GROUP}"cluster"
 AUTOGROUP="MC_"${GROUP}"_"${CLUSTER}"_"${LOCATION}
 
+#
+# 7. Output the configuration to the user
+#
 showConfig
 
+#
+# 8. If not in quiet mode, confirm the action with the user because it
+#    is dangerous and not revertable.
+#
 if [[ $QUIET != 1 ]]
 then
-    read -p "Continue (y for yes, anything else to quit)? " -n 1 -r
-    echo "" >&2
-    if [[ ! $REPLY =~ ^[Yy]$ ]]
+    processContinue
+    if (( $? != 1 ))
     then
         echo >&2
         exit 0
     fi
 fi
 
+#
+# 9. User has confirmed action or we are in quiet mode, so proceed.
+#
+
+#
+# 10. Check if tear down or instantiate
+#
 if (( $TEARDOWN == 1 ))
 then
     tearDown
 else
+    #
+    # 10a. Check if this is a full deploy or ONLY the cluster.
+    #
     if (( $DEPLOYCLUSTER == 1 || $DEPLOYFULL == 1 ))
     then
         deployInfrastructure
         echo >&2
     fi
 
+    #
+    # 10b. Check if this is a full deploy or ONLY the services.
+    #      NOTE: This assumes there is a K8S infrastructure ready
+    #            to deploy the pods and services to.
+    #
     if (( $DEPLOYSERVICES == 1 || $DEPLOYFULL == 1 ))
     then
         deployServices
@@ -216,6 +124,9 @@ else
     fi
 fi
 
+#
+# 11. Done.
+#
 echo
 echo "Done."
 echo
