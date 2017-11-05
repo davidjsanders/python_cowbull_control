@@ -10,6 +10,9 @@ source scripts/v2/showInfo.sh
 source scripts/v2/removeK8SComponents.sh
 source scripts/v2/deployK8SComponents.sh
 source scripts/v2/showConfig.sh
+source scripts/v2/deployInfrastructure.sh
+source scripts/v2/deployServices.sh
+source scripts/v2/tearDown.sh
 
 
 #TODO -> Use the variables to making understanding the options easier
@@ -165,32 +168,20 @@ while true; do
     esac
 done
 
+echo >&2
+echo "|------------------------------------------------------------------|" >&2
 if (( $TEARDOWN == 1 ))
 then
-    echo >&2
-    echo "Tearing down the Python Cowbull suite with the following options:" >&2
-    echo "-----------------------------------------------------------------" >&2
+    echo "|                                                                  |" >&2
+    echo "| Tearing down the Python Cowbull suite with the following options |" >&2
+    echo "|                                                                  |" >&2
+    echo "| WARNING! WARNING! WARNING!                                       |" >&2
+    echo "| !! This step cannot be cancelled or reverted !!                  |" >&2
+    echo "|                                                                  |" >&2
 else
-    echo >&2
-    echo "Deploying Python Cowbull suite with the following options:" >&2
-    echo "----------------------------------------------------------" >&2
+    echo "| Deploying Python Cowbull suite with the following options        |" >&2
 fi
-
-if [[ $DEBUG == 1 ]] ;
-then
-    echo "" >&2
-    echo "*" >&2
-    echo "* DEBUG" >&2
-    echo "* -----" >&2
-    echo "* EXEAZURE:  "$EXEAZURE >&2
-    echo "* EXEGOOGLE: "$EXEGOOGLE >&2
-    echo "* EXEMINIKUBE: "$EXEMINIKUBE >&2
-    echo "* GROUP:     "$GROUP >&2
-    echo "* DRY RUN:   "$DRYRUN >&2
-    echo "* DEBUG:     "$DEBUG >&2
-    echo "*" >&2
-    echo "" >&2
-fi
+echo "|------------------------------------------------------------------|" >&2
 
 CLUSTER=${GROUP}"cluster"
 AUTOGROUP="MC_"${GROUP}"_"${CLUSTER}"_"${LOCATION}
@@ -210,109 +201,18 @@ fi
 
 if (( $TEARDOWN == 1 ))
 then
-    echo ""
-    echo "Tearing down Python CowBull game infrastructure"
-    echo "==============================================="
-    echo ""
-
-    if [[ $EXEAZURE == 1  ]];
-    then
-        source vendor/Azure/spindown-cluster
-        if [ $? != 0  ]; then exit 1; fi
-    fi
-
-    if [[ $EXEGOOGLE == 1 ]];
-    then
-        source vendor/Google/spindown-cluster
-        if [ $? != 0  ]; then exit 1; fi
-    fi
-
-    if [[ $EXEMINIKUBE == 1 ]];
-    then
-        source vendor/minikube/spindown-cluster
-        if [ $? != 0  ]; then exit 1; fi
-    fi
-
-    echo >&2
-    echo "-------------------------------------------------------------------------" >&2
-    echo "Cluster torn down." >&2
-    echo "-------------------------------------------------------------------------" >&2
-    echo >&2
-    exit 0
-
+    tearDown
 else
     if (( $DEPLOYCLUSTER == 1 || $DEPLOYFULL == 1 ))
     then
-        echo ""
-        echo "Deploying Python CowBull game infrastructure"
-        echo "============================================"
-        echo ""
-
-        if [[ $EXEAZURE == 1  ]];
-        then
-            source vendor/Azure/spinup-cluster
-            if [ $? != 0  ]; then exit 1; fi
-        fi
-
-        if [[ $EXEGOOGLE == 1 ]];
-        then
-            source vendor/Google/spinup-cluster
-            if [ $? != 0  ]; then exit 1; fi
-        fi
-
-        if [[ $EXEMINIKUBE == 1 ]];
-        then
-            source vendor/minikube/spinup-cluster
-            if [ $? != 0  ]; then exit 1; fi
-        fi
-
-        echo >&2
-        echo "-------------------------------------------------------------------------" >&2
-        echo "Cluster ready." >&2
-        echo "-------------------------------------------------------------------------" >&2
-        echo >&2
-        showConfig
+        deployInfrastructure
         echo >&2
     fi
 
     if (( $DEPLOYSERVICES == 1 || $DEPLOYFULL == 1 ))
     then
-        echo ""
-        echo "Deploying Python CowBull game configuration, pods, and services"
-        echo "==============================================================="
-        echo ""
-
-        removeK8Scomponents
-        deployK8Scomponents
-
-        azure_option=""
-        if (( $EXEAZURE == 1 ));
-        then
-            if (( $DRYRUN == 0 ));
-            then
-                ipaddr=$(\
-                  az network public-ip create \
-                  --name $DNS_PREFIX"-webapp-pip" \
-                  --dns-name $PIP_NAME \
-                  --allocation-method static \
-                  --version IPv4 \
-                  -g $AUTOGROUP \
-                  -o json | jq -r .publicIp.ipAddress)
-                azure_option="--load-balancer-ip="${ipaddr}
-            else
-                echo
-                echo "Dry run - Assign static IP to load balancer."
-                echo "--------------------------------------------"
-                echo "ipaddr=\$(az network public-ip create --name $DNS_PREFIX"-webapp-pip" --dns-name $PIP_NAME --allocation-method static --version IPv4 -g $AUTOGROUP -o json | jq -r .publicIp.ipAddress)"
-                echo "azure_option=--load-balancer-ip=\${ipaddr}"
-            fi
-        fi
-
-        if (( $DRYRUN != 1 ));
-        then
-            echo "Creating webapp service"
-            kubectl expose deployment webapp --type=LoadBalancer $azure_option
-        fi
+        deployServices
+        echo >&2
     fi
 fi
 

@@ -56,7 +56,14 @@ fi
 echo "  ok   |"
 
 echo -n "| Checking group does not exist      | "
-groupCheck=$(az group list --query '[?name==`$GROUP`]|[?location==`$LOCATION`].name' --output tsv)"x"
+
+if (( $DRYRUN == 0 ))
+then
+    groupCheck=$(az group list --query '[?name==`$GROUP`]|[?location==`$LOCATION`].name' --output tsv)"x"
+else
+    groupCheck="x"
+fi
+
 if [[ $groupCheck != "x" ]]
 then
     echo " FAIL  |"
