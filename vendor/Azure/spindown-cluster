@@ -55,7 +55,7 @@ echo -n "| Checking group does not exist      | " >&2
 
 if (( $DRYRUN == 0 ))
 then
-    groupCheck=$(az group list --query '[?name==`$GROUP`]|[?location==`$LOCATION`].name' --output tsv)"x"
+    groupCheck=$(az group list --query '[?name==`'$GROUP'`]|[?location==`'$LOCATION'`].name' --output tsv)"x"
 else
     groupCheck="y"
 fi
