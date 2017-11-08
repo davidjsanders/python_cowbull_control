@@ -17,6 +17,7 @@ source scripts/v2/showTeardown.sh
 source scripts/v2/showSpinup.sh
 source scripts/v2/processContinue.sh
 source scripts/v2/setDefaults.sh
+source scripts/v2/setVendorSpecifics.sh
 
 #
 # 2. Set defaults and initialize variables
@@ -69,10 +70,9 @@ else
 fi
 
 #
-# 6. Compute specific variable for Azure
+# 6. Compute specific variable for each vendor
 #
-CLUSTER=${GROUP}"cluster"
-AUTOGROUP="MC_"${GROUP}"_"${CLUSTER}"_"${LOCATION}
+setVendorSpecifics
 
 #
 # 7. Output the configuration to the user

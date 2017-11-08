@@ -10,11 +10,11 @@ function setDefaults {
     EXEGOOGLE=0
     EXEMINIKUBE=0
     DATEFILL=$(date +"%m%d%y")
-    GROUP="k8"${DATEFILL}"RG"
+    GROUP="dasander"${DATEFILL}
     MASTER_COUNT=1
     AGENT_COUNT=1
-    LOCATION="westus2"
-    MACHINE_TYPE="Standard_A2"
+    LOCATION="**notset**"
+    MACHINE_TYPE="**notset**"
     DNS_PREFIX="dnsprefix"
     PIP_NAME="cowbull_webapp"
     DEBUG=0
