@@ -9,7 +9,7 @@ _deploy()
     opts=$opts" -q --quiet -r --mini-ram -t --machine-type -A --azure"
     opts=$opts" -G --google -K --minikube -D --dry-run"
     opts=$opts" -F --deploy-all -S --deploy-services -C --deploy-cluster"
-    opts=$opts" -T --tear-down"
+    opts=$opts" -T --tear-down -k --get-context"
 
     if [[ ${cur} == -* ]] ; then
         COMPREPLY=( $(compgen -W "${opts}" -- ${cur}) )

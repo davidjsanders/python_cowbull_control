@@ -6,6 +6,7 @@ function setDefaults {
     USAGE_STRING=$USAGE_STRING" [-r|--mini-ram ram (Minikube only)] [-t|--machine-type machine type (Azure and Google)]"
 
     PARSED=""
+    GET_CONTEXT_ONLY=""
     EXEAZURE=0
     EXEGOOGLE=0
     EXEMINIKUBE=0

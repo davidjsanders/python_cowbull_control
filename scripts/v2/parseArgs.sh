@@ -14,6 +14,7 @@ function parseArgs {
     parse_options=$parse_options"d"	# or --debug; provide verbose debugging information
     parse_options=$parse_options"g:"	# or --group; specify the group name - also used to create cluster name
     parse_options=$parse_options"h"	# or --help; print help
+    parse_options=$parse_options"k"	# or --get-context; get credentials for kubectl
     parse_options=$parse_options"l:"	# or --location; Azure location or Google zone
     parse_options=$parse_options"m:"	# DEPRECATED - previously was --masters number of master VMs
     parse_options=$parse_options"n:"	# or --dns-name; Azure only - specify the DNS prefix
@@ -36,6 +37,7 @@ function parseArgs {
     parse_long_options=$parse_long_options"dns-name:,"
     parse_long_options=$parse_long_options"machine-type:,"
     parse_long_options=$parse_long_options"quiet,"
+    parse_long_options=$parse_long_options"get-context,"
     parse_long_options=$parse_long_options"dry-run,"
     parse_long_options=$parse_long_options"azure,google,"
     parse_long_options=$parse_long_options"group:,"

@@ -41,6 +41,10 @@ function processArgument {
             DNS_PREFIX=$2
             SHIFT_AMOUNT=2
             ;;
+        -k|--get-context)
+            GET_CONTEXT_ONLY="set"
+            SHIFT_AMOUNT=1
+            ;;
         -t|--machine-type)
             MACHINE_TYPE=$2
             SHIFT_AMOUNT=2

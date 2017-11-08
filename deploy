@@ -18,6 +18,7 @@ source scripts/v2/showSpinup.sh
 source scripts/v2/processContinue.sh
 source scripts/v2/setDefaults.sh
 source scripts/v2/setVendorSpecifics.sh
+source scripts/v2/getContext.sh
 
 #
 # 2. Set defaults and initialize variables
@@ -59,7 +60,21 @@ while true; do
 done
 
 #
-# 5. Show the welcome message. Differs based on tear down or instantiate
+# 5. Compute specific variable for each vendor
+#
+setVendorSpecifics
+
+#
+# NEW STEP: Get context only then exit
+#
+if [[ $GET_CONTEXT_ONLY == "set" ]]
+then
+    getContext
+    exit
+fi
+
+#
+# 6. Show the welcome message. Differs based on tear down or instantiate
 #    actions.
 #
 if (( $TEARDOWN == 1 ))
@@ -68,11 +83,6 @@ then
 else
     showSpinup
 fi
-
-#
-# 6. Compute specific variable for each vendor
-#
-setVendorSpecifics
 
 #
 # 7. Output the configuration to the user
