@@ -25,7 +25,7 @@ function svs_Azure1 {
 function svs_Google1 {
     if [[ $LOCATION == "**notset**" ]]
     then
-        LOCATION="us-east-1b"
+        LOCATION="us-east1-b"
     fi
     if [[ $MACHINE_TYPE == "**notset**" ]]
     then
