@@ -9,7 +9,8 @@ source scripts/v2/deployK8SComponents.sh
 source scripts/v2/showConfig.sh
 source scripts/v2/deployInfrastructure.sh
 source scripts/v2/deployServices.sh
-source scripts/v2/tearDown.sh
+source scripts/v2/tearDownCluster.sh
+source scripts/v2/tearDownServices.sh
 source scripts/v2/parseArgs.sh
 source scripts/v2/processArgument.sh
 source scripts/v2/showTeardown.sh
@@ -101,7 +102,14 @@ fi
 #
 if (( $TEARDOWN == 1 ))
 then
-    tearDown
+    if (( $DEPLOYSERVICES == 1 || $DEPLOYFULL == 1 ))
+    then
+        tearDownServices
+    fi
+    if (( $DEPLOYCLUSTER == 1 || $DEPLOYFULL == 1 ))
+    then
+        tearDownCluster
+    fi
 else
     #
     # 10a. Check if this is a full deploy or ONLY the cluster.

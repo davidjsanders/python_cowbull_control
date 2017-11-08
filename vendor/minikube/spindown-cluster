@@ -46,7 +46,12 @@ fi
 echo "|------------------------------------|--------| "
 echo ""
 echo "Step 1. Stop minikube"
-minikube stop
+if (( $DRYRUN == 0 ))
+then
+    minikube stop
+else
+    echo "minikube stop ...dry run"
+fi
 echo ""
 echo "Done."
 echo ""

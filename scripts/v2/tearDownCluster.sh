@@ -1,14 +1,8 @@
-function tearDown {
+function tearDownCluster {
     echo ""
     echo "Tearing down Python CowBull game infrastructure"
     echo "==============================================="
     echo ""
-
-    echo >&2
-    echo "Stop and remove configuration maps, pods, and services" >&2
-    echo >&2
-
-    source scripts/v2/removeK8SComponents.sh
 
     echo >&2
     echo "Tear down infrastructure" >&2
