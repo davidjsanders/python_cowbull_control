@@ -15,6 +15,7 @@ function setDefaults {
 
     PARSED=""
     GET_CONTEXT_ONLY=""
+    EXEACS=0
     EXEAZURE=0
     EXEGOOGLE=0
     EXEMINIKUBE=0

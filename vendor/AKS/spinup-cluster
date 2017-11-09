@@ -4,8 +4,8 @@
 #
 #
 echo ""
-echo "Deploy to Azure Container Services - Kubernetes Controller"
-echo "=========================================================="
+echo "Deploy to Azure Kubernete Services"
+echo "=================================="
 echo ""
 echo "|------------------------------------|--------| "
 echo "| Validate environment               | Status |"
@@ -124,34 +124,21 @@ else
 fi
 
 echo ""
-echo "2. Create the cluster."
+echo "2. Create the cluster. --resource-group "$GROUP" --name "$CLUSTER" --agent-count "$AGENT_COUNT" --agent-vm-size "$MACHINE_TYPE
 echo ""
-echo "az acs create --orchestrator-type kubernetes --resource-group $GROUP --name $CLUSTER --generate-ssh-keys --agent-vm-size $MACHINE_TYPE --agent-count $AGENT_COUNT --master-vm-size $MACHINE_TYPE --master-count 1 -dns-prefix $DNS_PREFIX" >&2
-
+echo -n "az aks create --resource-group $GROUP --name $CLUSTER --generate-ssh-keys --agent-count $AGENT_COUNT --agent-vm-size $MACHINE_TYPE "
 if [[ $DRYRUN != 1  ]]
 then
-    az acs create \
-      --orchestrator-type kubernetes \
+    az aks create \
       --resource-group $GROUP \
       --name $CLUSTER \
       --generate-ssh-keys \
-      --agent-vm-size $MACHINE_TYPE \
+      --dns-name-prefix $DNS_PREFIX \
+      --kubernetes-version 1.8.1 \
       --agent-count $AGENT_COUNT \
-      --master-vm-size $MACHINE_TYPE \
-      --master-count 1 \
-      --dns-prefix $DNS_PREFIX
+      --agent-vm-size $MACHINE_TYPE
     echo
 else
-    echo "az acs create " >&2
-    echo "  --orchestrator-type kubernetes " >&2
-    echo "  --resource-group $GROUP " >&2
-    echo "  --name $CLUSTER " >&2
-    echo "  --generate-ssh-keys " >&2
-    echo "  --agent-vm-size $MACHINE_TYPE " >&2
-    echo "  --agent-count $AGENT_COUNT " >&2
-    echo "  --master-vm-size $MACHINE_TYPE " >&2
-    echo "  --master-count 1 " >&2
-    echo "  --dns-prefix $DNS_PREFIX" >&2
     echo "... dry run only"
 fi
 
@@ -171,13 +158,9 @@ echo ""
 echo "4. Get kubernetes credentials to configure kubectl"
 echo ""
 echo -n "az aks get-credentials --resource-group=$GROUP --name=$CLUSTER "
-echo -n "az acs kubernetes get-credentials --resource-group=$GROUP --name=$CLUSTER "
 if [[ $DRYRUN != 1  ]]
 then
-    az acs kubernetes \
-      get-credentials \
-      --resource-group=$GROUP \
-      --name=$CLUSTER
+    az aks get-credentials --resource-group=$GROUP --name=$CLUSTER
     echo
 else
     echo "... dry run only"

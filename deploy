@@ -1,5 +1,17 @@
 #!/usr/bin/env bash
 #
+# 0. Pre-check dependencies
+#
+jqpath=$(which jq)"X"
+if [[ $jqpath == "X" ]]
+then
+    echo >&2
+    echo "Error - A required dependency is missing: jq" >&2
+    echo "        See https://stedolan.github.io/jq/download/ for download instructions" >&2
+    echo >&2
+    exit 1
+fi
+#
 # 1. Load source modules
 #
 source scripts/v2/showHelp.sh
@@ -62,10 +74,13 @@ done
 #
 # 5. Ensure vendor is selected
 #
-if (( $EXEAZURE == 0 )) && (( $EXEGOOGLE == 0 )) && (( $EXEMINIKUBE == 0 ))
+if (( $EXEACS == 0 )) && \
+   (( $EXEAZURE == 0 )) && \
+   (( $EXEGOOGLE == 0 )) && \
+   (( $EXEMINIKUBE == 0 ))
 then
     echo "" >&2
-    echo "A vendor needs to be specified in the command; e.g. deploy azure or deploy google." >&2
+    echo "A vendor needs to be specified in the command; e.g.: deploy minikube | deploy acs | deploy azure | deploy google." >&2
     echo "Use deploy --help to see options." >&2
     echo "" >&2
     exit 1

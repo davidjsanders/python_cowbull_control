@@ -8,9 +8,15 @@ function tearDownCluster {
     echo "Tear down infrastructure" >&2
     echo >&2
 
-    if [[ $EXEAZURE == 1  ]];
+    if [[ $EXEACS == 1  ]];
     then
         source vendor/Azure/spindown-cluster
+        if [ $? != 0  ]; then exit 1; fi
+    fi
+
+    if [[ $EXEAZURE == 1  ]];
+    then
+        source vendor/AKS/spindown-cluster
         if [ $? != 0  ]; then exit 1; fi
     fi
 

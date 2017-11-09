@@ -1,0 +1,127 @@
+#!/usr/bin/env bash
+echo >&2
+echo "Tear down Azure Kubernete Services" >&2
+echo "==================================" >&2
+echo >&2
+echo "|------------------------------------|--------| " >&2
+echo "| Validate environment               | Status |" >&2
+echo "|------------------------------------|--------| " >&2
+
+# Check variables are defined
+echo -n "| Variables have been defined okay   | " >&2
+if [[ $GROUP"X" == "X"  ]];
+then
+    echo " FAIL  |" >&2
+    echo >&2
+    echo "Error; the variables are not set. This script must ONLY be called" >&2
+    echo "       using the deploy script. Please run deploy in the root of" >&2
+    echo "       the python_cowbull_control installation directory."  >&2
+    echo >&2
+    return 1
+fi
+echo "  ok   |" >&2
+
+azpath=$(which az)"x"
+echo -n "| azure cli is installed             | " >&2
+if [[ $azpath == "x" ]]
+then
+    echo " FAIL  |" >&2
+    echo "" >&2
+    echo "Error; the Azure CLI (version 2.0+) must be installed. " >&2
+    echo "See https://docs.microsoft.com/en-us/cli/azure/install-azure-cli?view=azure-cli-latesti " >&2
+    echo "" >&2
+    return 1
+fi
+echo "  ok   |" >&2
+
+echo -n "| private key is available           | " >&2
+if [ ! -f ~/.ssh/id_rsa ]
+then
+    echo " FAIL  |" >&2
+    echo "" >&2
+    echo "Error; there is no id_rsa private key in the .ssh subdirectory" >&2
+    echo "You need to create it. Do the following:" >&2
+    echo "" >&2
+    echo "1. cd ~/.ssh" >&2
+    echo "2. ssh-keygen -b 4096 -t rsa" >&2
+    echo "" >&2
+    echo "(In step 2, make sure to accept the default id_rsa)" >&2
+    echo "" >&2
+    return 1
+fi
+echo "  ok   |" >&2
+
+echo -n "| Checking group does not exist      | " >&2
+
+if (( $DRYRUN == 0 ))
+then
+    groupCheck=$(az group list --query '[?name==`'$GROUP'`]|[?location==`'$LOCATION'`].name' --output tsv)"x"
+else
+    groupCheck="y"
+fi
+
+if [[ $groupCheck == "x" ]]
+then
+    echo " FAIL  |" >&2
+    echo "" >&2
+    echo "Error; the group ("$GROUP") in location "$LOCATION" does not exist!" >&2
+    echo "The assumption is if the group does not exist, then the cluster cannot exists. Please check the group name." >&2
+    echo "" >&2
+    return 1
+fi
+echo "  ok   |" >&2
+
+echo -n "| Checking ssh is running correctly  | " >&2
+sshAgent=$(ps -ef | grep "ssh-agent" | grep -v grep)"x"
+if [[ $sshAgent == "x" ]]
+then
+    echo " FAIL  |" >&2
+    echo "" >&2
+    echo "Error; ssh is not running. Run the following command before running..." >&2
+    echo "eval "$(ssh-agent -s)"" >&2
+    echo "" >&2
+    return 1
+fi
+echo "  ok   |" >&2
+
+echo "|------------------------------------|--------| " >&2
+echo "" >&2
+echo "" >&2
+echo "Configuration will be set as follows:" >&2
+echo "-------------------------------------" >&2
+echo "" >&2
+echo "resource group:   "$GROUP >&2
+echo "cluster name  :   "$CLUSTER >&2
+echo "master count  :   "$MASTER_COUNT >&2
+echo "agent count   :   "$AGENT_COUNT >&2
+echo "location      :   "$LOCATION >&2
+echo "machine type  :   "$MACHINE_TYPE >&2
+echo "dns prefix    :   "$DNS_PREFIX >&2
+echo "cowbull dns   :   "$PIP_NAME"."$DNS_PREFIX"."$LOCATION".cloudapp.azure.com" >&2
+echo "private key   :   "$KEYFILE >&2
+echo "" >&2
+echo >&2
+echo "Step 1. Deleting resource group (no wait specified) "$GROUP >&2
+echo -n "az group delete --name $GROUP --yes --no-wait " >&2
+if (( $DRYRUN == 0 ))
+then
+	az group delete --name $GROUP --yes --no-wait
+else
+	echo "...dry run" >&2
+fi
+echo ""
+echo "Step 2. Reset controls to minikube" >&2
+echo -n "kubectl config use-context minikube " >&2
+if (( $DRYRUN == 0 ))
+then
+	kubectl config use-context minikube
+else
+	echo "...dry run" >&2
+fi
+echo "" >&2
+echo "Done." >&2
+echo "" >&2
+echo "**NOTE** Please check that any resources which may have been" >&2
+echo "         automatically created (e.g. load balancers on GCP)" >&2
+echo "         are deleted. You may have to do this manually!" >&2
+echo >&2

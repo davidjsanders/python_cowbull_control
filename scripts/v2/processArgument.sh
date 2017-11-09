@@ -16,6 +16,16 @@ function processArgument {
                 return 1
             fi
             VENDOR_SELECTED=1
+            EXEACS=1
+            SHIFT_AMOUNT=1
+            ;;
+        aks)
+            if (( $VENDOR_SELECTED == 1 ))
+            then
+                ERROR_TEXT="Only one vendor can be selected per operation."
+                return 1
+            fi
+            VENDOR_SELECTED=1
             EXEAZURE=1
             SHIFT_AMOUNT=1
             ;;

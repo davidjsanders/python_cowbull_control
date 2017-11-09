@@ -12,6 +12,12 @@ function deployInfrastructure {
 
     if [[ $EXEAZURE == 1  ]];
     then
+        source vendor/AKS/spinup-cluster
+        if [ $? != 0  ]; then exit 1; fi
+    fi
+
+    if [[ $EXEACS == 1  ]];
+    then
         source vendor/Azure/spinup-cluster
         if [ $? != 0  ]; then exit 1; fi
     fi

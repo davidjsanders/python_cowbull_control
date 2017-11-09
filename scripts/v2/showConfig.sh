@@ -7,6 +7,9 @@ function showConfig {
     if (( $EXEAZURE == 1 )) 
     then
         echo "Azure Kubernetes Service (AKS)" >&2
+    elif (( $EXEACS == 1 ))
+    then
+        echo "Azure Container Service (ACS)" >&2
     elif (( $EXEGOOGLE == 1 ))
     then
         echo "Google Container Engine (GKE)" >&2
@@ -17,6 +20,7 @@ function showConfig {
     echo >&2
 
     showConfigAzure$EXEAZURE
+    showConfigAcs$EXEACS
     showConfigGoogle$EXEGOOGLE
     showConfigMinikube$EXEMINIKUBE
 
@@ -31,8 +35,26 @@ function showConfig {
     echo >&2
 }
 
+function showConfigAcs0 {
+    :
+}
+
 function showConfigAzure0 {
     :
+}
+
+function showConfigAcs1 {
+    echo
+    echo "Deploy to Azure Container Services Parameters" >&2
+    echo "---------------------------------------------" >&2
+    echo "Group name                     : "${GROUP} >&2
+    echo "Cluster name                   : "${CLUSTER} >&2
+    echo "Resource group location        : "${LOCATION} >&2
+    echo "Number of agents               : "${AGENT_COUNT} >&2
+    echo "Number of masters              : 1" >&2
+    echo "Machine type for agents        : "${MACHINE_TYPE} >&2
+    echo "DNS Prefix (Azure only)        : "${DNS_PREFIX} >&2
+    echo "PIP Name (Azure only)          : "${PIP_NAME} >&2
 }
 
 function showConfigAzure1 {
