@@ -25,7 +25,7 @@ function setDefaults {
     LOCATION="**notset**"
     MACHINE_TYPE="**notset**"
     DNS_PREFIX="dnsprefix"
-    PIP_NAME="cowbull_webapp"
+    PIP_NAME="cowbull-azure"
     DEBUG=0
     DRYRUN=0
     KEYFILE=~/.ssh/id_rsa

@@ -18,7 +18,7 @@ function deployServices {
               --dns-name $PIP_NAME \
               --allocation-method static \
               --version IPv4 \
-              -g $AUTOGROUP \
+              --resource-group $AUTOGROUP \
               -o json | jq -r .publicIp.ipAddress)
             azure_option="--load-balancer-ip="${ipaddr}
         else
