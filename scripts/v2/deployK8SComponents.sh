@@ -26,7 +26,7 @@ function deployK8Scomponents {
 
         echo "Creating configmap:  "
         kubectl create configmap cowbull-config \
-          --from-file=cowbull.cfg
+          --from-file=cowbull.cfg="cowbull-"$persister".cfg"
         echo
 
         if (( $MONGODB==1 ))
@@ -59,7 +59,7 @@ function deployK8Scomponents {
         echo ""
         echo "Dry run - Create services"
         echo "-------------------------"
-        echo "kubectl create configmap cowbull-config --from-file=cowbull.cfg"
+        echo "kubectl create configmap cowbull-config --from-file=cowbull.cfg=cowbull-"$persister".cfg"
         if (( $MONGODB==1 ))
         then
             echo "kubectl create -f "$vendor_path"/mongo-storage.yml"
