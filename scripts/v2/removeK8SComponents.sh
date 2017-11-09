@@ -1,24 +1,46 @@
 function removeK8Scomponents {
+    if (( $EXEAZURE==1 ))
+    then
+        vendor_path=vendor/Azure
+    elif (( $EXEGOOGLE==1 ))
+    then
+        vendor_path=vendor/Google
+    else
+        vendor_path=vendor/minikube
+    fi
+
+    if (( $MONGODB==0 ))
+    then
+        persister="redis"
+        persister_script=scripts/redis-
+    else
+        persister="mongodb"
+        persister_script=scripts/mongo-
+    fi
+
     if (( $DRYRUN == 0 ))
     then
         echo ""
-        echo "Dry run - remove services"
-        echo "-------------------------"
+        echo "Remove services"
+        echo "---------------"
 
         echo -n "Deleting configmap:  "
         kubectl delete configmap cowbull-config --ignore-not-found
         echo
 
-        echo -n "Deleting redis deployment:  "
-        kubectl delete \
-            -f "scripts/redis-deploy.yml" \
-            --ignore-not-found
+        if (( $MONGODB==1 ))
+        then
+            echo -n "Deleting mongo persistent storage:  "
+            kubectl delete -f $vendor_path/mongo-storage.yml --ignore-not-found
+            echo
+        fi
+
+        echo -n "Deleting "$persister" service:  "
+        kubectl delete -f $persister_script"service.yml" --ignore-not-found
         echo
 
-        echo -n "Deleting redis service:  "
-        kubectl delete \
-            -f "scripts/redis-service.yml" \
-            --ignore-not-found
+        echo -n "Deleting "$persister" deployment:  "
+        kubectl delete -f "$persister_script"deploy.yml --ignore-not-found
         echo
 
         echo -n "Deleting cowbull deployment:  "
@@ -47,8 +69,12 @@ function removeK8Scomponents {
         echo "Dry run - remove services"
         echo "-------------------------"
         echo "kubectl delete configmap cowbull-config --ignore-not-found"
-        echo "kubectl delete -f redis-deploy.yml --ignore-not-found"
-        echo "kubectl delete -f redis-service.yml --ignore-not-found"
+        if (( $MONGODB==1 ))
+        then
+            echo "kubectl delete -f "$vendor_path"/mongo-storage.yml --ignore-not-found"
+        fi
+        echo "kubectl delete -f "$persister"-service.yml --ignore-not-found"
+        echo "kubectl delete -f "$persister"-deploy.yml --ignore-not-found"
         echo "kubectl delete -f cowbull-deploy.yml --ignore-not-found"
         echo "kubectl delete -f cowbull-service.yml --ignore-not-found"
         echo "kubectl delete -f webapp-deploy.yml --ignore-not-found"

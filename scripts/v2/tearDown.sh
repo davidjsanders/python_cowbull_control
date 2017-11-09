@@ -11,6 +11,11 @@ function tearDown {
     source scripts/v2/removeK8SComponents.sh
 
     echo >&2
+    echo "Sleep for 30 seconds to give pods time to clear." >&2
+    echo >&2
+    sleep 30
+
+    echo >&2
     echo "Tear down infrastructure" >&2
     echo >&2
 

@@ -6,6 +6,7 @@ function parseArgs {
     parse_options=$parse_options"F"	# or --deploy-all; deploy/tear down cluster AND services
     parse_options=$parse_options"G"	# or --google; deploy/tear down Google Container Enginer (GKE)
     parse_options=$parse_options"K"	# or --minikube; deploy to Minikube
+    parse_options=$parse_options"M"     # or --mongodb; use MongoDB for persistence
     parse_options=$parse_options"S"	# or --deploy-services; deploy/tear down services only
     parse_options=$parse_options"T"	# or --tear-down; tear down rather than create
     parse_options=$parse_options"a:"	# or --agents; specify the number of VMs to instantiate as agents
@@ -31,6 +32,7 @@ function parseArgs {
     parse_long_options=$parse_long_options"deploy-services,"
     parse_long_options=$parse_long_options"mini-cpu:,"
     parse_long_options=$parse_long_options"mini-ram:,"
+    parse_long_options=$parse_long_options"mongodb,"
     parse_long_options=$parse_long_options"disk-size:,"
     parse_long_options=$parse_long_options"minikube,"
     parse_long_options=$parse_long_options"pip-name:,"

@@ -30,6 +30,7 @@ function setDefaults {
     DEPLOYSERVICES=0
     DEPLOYFULL=1
     TEARDOWN=0
+    MONGODB=0
 
     SHIFT_AMOUNT=0
     ERROR_TEXT=""

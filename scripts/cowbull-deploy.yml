@@ -15,6 +15,8 @@ spec:
       - name: cowbull
         image: dsanderscan/cowbull:latest
         env:
+        - name: "PERSISTENCE_ENGINE"
+          value: "mongodb"
         - name: "REDIS_HOST"
           value: "redis-master"
         - name: "LOGGING_LEVEL"

@@ -21,6 +21,10 @@ function processArgument {
             DISK_SIZE=$2
             SHIFT_AMOUNT=2
             ;;
+        -M|--mongodb)
+            MONGODB=1
+            SHIFT_AMOUNT=1
+            ;;
         -q|--quiet)
             QUIET=1
             SHIFT_AMOUNT=1
