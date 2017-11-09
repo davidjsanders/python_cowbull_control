@@ -60,12 +60,24 @@ while true; do
 done
 
 #
-# 5. Compute specific variable for each vendor
+# 5. Ensure vendor is selected
+#
+if (( $EXEAZURE == 0 )) && (( $EXEGOOGLE == 0 )) && (( $EXEMINIKUBE == 0 ))
+then
+    echo "" >&2
+    echo "A vendor needs to be specified in the command; e.g. deploy azure or deploy google." >&2
+    echo "Use deploy --help to see options." >&2
+    echo "" >&2
+    exit 1
+fi
+
+#
+# 6. Compute specific variable for each vendor
 #
 setVendorSpecifics
 
 #
-# NEW STEP: Get context only then exit
+# 7. Get context only then exit
 #
 if [[ $GET_CONTEXT_ONLY == "set" ]]
 then
@@ -74,7 +86,7 @@ then
 fi
 
 #
-# 6. Show the welcome message. Differs based on tear down or instantiate
+# 8. Show the welcome message. Differs based on tear down or instantiate
 #    actions.
 #
 if (( $TEARDOWN == 1 ))
@@ -85,12 +97,12 @@ else
 fi
 
 #
-# 7. Output the configuration to the user
+# 9. Output the configuration to the user
 #
 showConfig
 
 #
-# 8. If not in quiet mode, confirm the action with the user because it
+# 10. If not in quiet mode, confirm the action with the user because it
 #    is dangerous and not revertable.
 #
 if [[ $QUIET != 1 ]]
@@ -104,11 +116,11 @@ then
 fi
 
 #
-# 9. User has confirmed action or we are in quiet mode, so proceed.
+# 11. User has confirmed action or we are in quiet mode, so proceed.
 #
 
 #
-# 10. Check if tear down or instantiate
+# 12. Check if tear down or instantiate
 #
 if (( $TEARDOWN == 1 ))
 then
@@ -122,7 +134,7 @@ then
     fi
 else
     #
-    # 10a. Check if this is a full deploy or ONLY the cluster.
+    # 12a. Check if this is a full deploy or ONLY the cluster.
     #
     if (( $DEPLOYCLUSTER == 1 || $DEPLOYFULL == 1 ))
     then
@@ -131,7 +143,7 @@ else
     fi
 
     #
-    # 10b. Check if this is a full deploy or ONLY the services.
+    # 12b. Check if this is a full deploy or ONLY the services.
     #      NOTE: This assumes there is a K8S infrastructure ready
     #            to deploy the pods and services to.
     #
@@ -143,7 +155,7 @@ else
 fi
 
 #
-# 11. Done.
+# 13. Done.
 #
 echo
 echo "Done."

@@ -3,17 +3,17 @@ function showConfig {
     echo "Configuration to be deployed / torn-down" >&2
     echo "----------------------------------------" >&2
     echo >&2
-    echo "Platforms selected" >&2
-    echo "------------------" >&2
-    echo -n "Azure Deployment      : " >&2
-    if (( $EXEAZURE == 1 )); then echo "Deploying" >&2; else echo "Skipped" >&2; fi
-
-    echo -n "Google Deployment     : "
-    if (( $EXEGOOGLE == 1 )); then echo "Deploying" >&2; else echo "Skipped" >&2; fi
-
-    echo -n "Minikube Deployment   : "
-    if (( $EXEMINIKUBE == 1 )); then echo "Deploying" >&2; else echo "Skipped" >&2; fi
-
+    echo -n "Platforms selected : " >&2
+    if (( $EXEAZURE == 1 )) 
+    then
+        echo "Azure Kubernetes Service (AKS)" >&2
+    elif (( $EXEGOOGLE == 1 ))
+    then
+        echo "Google Container Engine (GKE)" >&2
+    elif (( $EXEMINIKUBE == 1 ))
+    then
+        echo "Minikube" >&2
+    fi
     echo >&2
 
     showConfigAzure$EXEAZURE

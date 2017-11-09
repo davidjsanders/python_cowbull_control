@@ -1,11 +1,8 @@
 function parseArgs {
     parse_options=""
-    parse_options=$parse_options"A"	# or --azure; deploy/tear down Azure
     parse_options=$parse_options"C"	# or --deploy-cluster; only deploy/tear down the cluster (no services)
     parse_options=$parse_options"D"	# or --dry-run; run through but DO NOT execute any step
     parse_options=$parse_options"F"	# or --deploy-all; deploy/tear down cluster AND services
-    parse_options=$parse_options"G"	# or --google; deploy/tear down Google Container Enginer (GKE)
-    parse_options=$parse_options"K"	# or --minikube; deploy to Minikube
     parse_options=$parse_options"M"     # or --mongodb; use MongoDB for persistence
     parse_options=$parse_options"S"	# or --deploy-services; deploy/tear down services only
     parse_options=$parse_options"T"	# or --tear-down; tear down rather than create
@@ -34,14 +31,12 @@ function parseArgs {
     parse_long_options=$parse_long_options"mini-ram:,"
     parse_long_options=$parse_long_options"mongodb,"
     parse_long_options=$parse_long_options"disk-size:,"
-    parse_long_options=$parse_long_options"minikube,"
     parse_long_options=$parse_long_options"pip-name:,"
     parse_long_options=$parse_long_options"dns-name:,"
     parse_long_options=$parse_long_options"machine-type:,"
     parse_long_options=$parse_long_options"quiet,"
     parse_long_options=$parse_long_options"get-context,"
     parse_long_options=$parse_long_options"dry-run,"
-    parse_long_options=$parse_long_options"azure,google,"
     parse_long_options=$parse_long_options"group:,"
     parse_long_options=$parse_long_options"masters:,"
     parse_long_options=$parse_long_options"agents:,"
