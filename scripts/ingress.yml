@@ -6,6 +6,12 @@ metadata:
     ingress.kubernetes.io/rewrite-target: /
 spec:
   rules:
+  - host: cowbull.com
+    http:
+      paths:
+      - backend:
+          serviceName: webapp-ingress
+          servicePort: 8080
   - http:
       paths:
       - path: /cowbull
