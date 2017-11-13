@@ -68,15 +68,31 @@ function deployServices {
     fi
 
     echo >&2
+    echo "Creating Ingres Controller using NGINX"
+    if (( $DRYRUN != 1 ))
+    then
+        echo -n "Creating controller " >&2
+        kubectl create -f scripts/nginx-controller.yml
+        echo -n "Creating backend " >&2
+        kubectl create -f scripts/nginx-backend.yml
+    else
+        echo -n "Creating controller " >&2
+        echo "...dry run -> kubectl create -f scripts/nginx-controller.yml " >&2
+        echo -n "Creating backend " >&2
+        echo "...dry run -> kubectl create -f scripts/nginx-backend.yml " >&2
+    fi
+
+    echo >&2
     echo ""
     echo -n "Creating webapp service: " >&2
     if (( $DRYRUN != 1 ));
     then
 #        kubectl expose deployment webapp --type=LoadBalancer $ip_option_args
-        kubectl expose deployment webapp --name webapp-ingress --target-port=8080 --type=NodePort
+        kubectl expose deployment webapp --name webapp-ingress --port=8080 --type=NodePort
         kubectl create -f scripts/ingress.yml
     else
         echo "" >&2
-        echo "kubectl expose deployment webapp --name webapp-ingress --target-port=8080 --type=NodePort ...dry run" >&2
+#        echo "kubectl expose deployment webapp --type=LoadBalancer $ip_option_args" >&2
+        echo "kubectl expose deployment webapp --name webapp-ingress --port=8080 --type=NodePort ...dry run" >&2
     fi
 }

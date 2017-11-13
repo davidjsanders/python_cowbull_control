@@ -66,7 +66,13 @@ function removeK8Scomponents {
         echo
 
         echo -n "Deleting webapp ingress: "
-        kubectl delete -f scripts/ingress.yml
+        kubectl delete -f scripts/ingress.yml --ignore-not-found
+
+        echo -n "Deleting Ingress controller"
+        kubectl delete -f scripts/nginx-controller.yml --ignore-not-found
+
+        echo -n "Deleting Ingress default backend"
+        kubectl delete -f scripts/nginx-backend.yml --ignore-not-found
     else
         echo ""
         echo "Dry run - remove services"
@@ -83,6 +89,8 @@ function removeK8Scomponents {
         echo "kubectl delete -f webapp-deploy.yml --ignore-not-found"
         echo "kubectl delete -f webapp-service.yml --ignore-not-found"
         echo "kubectl delete svc webapp --ignore-not-found"
+        echo "kubectl delete -f scripts/nginx-controller.yml"
+        echo "kubectl delete -f scripts/nginx-backend.yml"
     fi
 }
 
