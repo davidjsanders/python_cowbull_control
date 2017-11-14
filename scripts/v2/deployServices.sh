@@ -71,6 +71,7 @@ function deployServices {
     echo "Creating Ingres Controller using NGINX"
     if (( $DRYRUN != 1 ))
     then
+        kubectl create secret tls tls-certificate --key configuration/selfsigned.key --cert configuration/selfsigned.crt
         echo -n "Creating controller " >&2
         kubectl create -f scripts/nginx-controller.yml
         echo -n "Creating backend " >&2

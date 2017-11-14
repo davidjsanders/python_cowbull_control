@@ -28,6 +28,10 @@ function removeK8Scomponents {
         kubectl delete configmap cowbull-config --ignore-not-found
         echo
 
+        echo -n "Deleting secrets:  "
+        kubectl delete secret tls-certificate
+        echo
+
         if (( $MONGODB==1 ))
         then
             echo -n "Deleting mongo persistent storage:  "

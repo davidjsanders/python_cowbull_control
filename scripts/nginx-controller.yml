@@ -56,3 +56,4 @@ spec:
         args:
         - /nginx-ingress-controller
         - --default-backend-service=$(POD_NAMESPACE)/nginx-default-backend
+        - --default-ssl-certificate=$(POD_NAMESPACE)/tls-certificate
