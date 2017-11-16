@@ -3,6 +3,9 @@ __pycache__/
 *.py[cod]
 *$py.class
 
+# D Sanders
+*.xml
+
 # C extensions
 *.so
 
