@@ -1,12 +1,13 @@
 function deployServices {
-    echo "In deployServices"
     if [[ $INGRESS"X" == "X" ]]; then INGRESS=0; fi
+    if [[ $MONGODB"X" == "X" ]]; then MONGODB=0; fi
+    if [[ $VENDOR_PATH"X" == "X" ]]; then setVendorSpecifics; fi
 
-    echo "" >&2
+    echo >&2
     echo "Deploying Python CowBull game configuration, pods, and services" >&2
-    echo "===============================================================" >&2
-    echo "" >&2
+    echo >&2
 
+    echo "Step 1. Remove any existing deployments, services, and configuration."
     removeK8Scomponents
 
     deployK8Scomponents

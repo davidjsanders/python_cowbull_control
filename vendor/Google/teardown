@@ -1,0 +1,24 @@
+#!/usr/bin/env bash
+echo ""
+echo "Remove cluster from Google Container Engine"
+echo "-------------------------------------------"
+echo ""
+echo "Step 1. Deleting cluster (async - no wait specified) "$rg
+if (( $DRYRUN == 0))
+then
+	gcloud container clusters delete $CLUSTER --zone=$LOCATION --async --quiet
+else
+	echo "gcloud container clusters delete $CLUSTER --zone=$LOCATION --async --quiet   ...dry run only"
+fi
+
+echo ""
+echo "Step 2. Reset controls to minikube"
+if (( $DRYRUN == 0))
+then
+	kubectl config use-context minikube
+else
+	echo "kubectl config use-context minikube   ...dry run only"
+fi
+echo ""
+echo "Done."
+echo ""

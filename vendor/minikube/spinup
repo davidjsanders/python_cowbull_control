@@ -1,0 +1,31 @@
+#!/usr/bin/env bash
+echo ""
+echo "Deploy to local machine on Minikube"
+echo "-----------------------------------"
+echo ""
+echo "Start minikube"
+echo ""
+echo "minikube --memory "$MINIRAM" --cpus "$MINICPU
+if [[ $DRYRUN != 1  ]]
+then
+    if [[ $minikubeStatus == "running" ]]
+    then
+        echo "Already running. Will not restart."
+    else
+        minikube start --memory $MINIRAM --cpus $MINICPU
+    fi
+else
+    echo "... dry run only"
+fi
+
+echo ""
+echo "Get minikube context for kubectl"
+echo ""
+echo -n "kubectl config use-context minikube"
+if [[ $DRYRUN != 1  ]]
+then
+    kubectl config use-context minikube
+    echo
+else
+    echo "... dry run only"
+fi

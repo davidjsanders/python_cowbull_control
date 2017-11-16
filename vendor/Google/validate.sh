@@ -1,10 +1,6 @@
 #!/usr/bin/env bash
-echo ""
-echo "Deploy to Google Container Engine"
-echo "================================="
-echo ""
 echo "|------------------------------------|--------| "
-echo "| Validate environment               | Status |"
+echo "| Validation step                    | Status |"
 echo "|------------------------------------|--------| "
 
 # Check variables are defined
@@ -77,25 +73,20 @@ then
 fi
 echo "  ok   |"
 
+echo -n "| Checking ssh is running correctly  | "
+sshAgent=$(ps -ef | grep "ssh-agent" | grep -v grep)"x"
+if [[ $sshAgent == "x" ]]
+then
+    echo " FAIL  |"
+    echo ""
+    echo "Error; ssh is not running. Run the following command before running..."
+    echo "eval \$(ssh-agent -s)"
+    echo ""
+    return 1
+fi
+echo "  ok   |"
+
 echo "|------------------------------------|--------| "
 echo ""
 echo ""
-echo "Step 1. Deleting cluster (async - no wait specified) "$rg
-if (( $DRYRUN == 0))
-then
-	gcloud container clusters delete $CLUSTER --zone=$LOCATION --async --quiet
-else
-	echo "gcloud container clusters delete $CLUSTER --zone=$LOCATION --async --quiet   ...dry run only"
-fi
 
-echo ""
-echo "Step 2. Reset controls to minikube"
-if (( $DRYRUN == 0))
-then
-	kubectl config use-context minikube
-else
-	echo "kubectl config use-context minikube   ...dry run only"
-fi
-echo ""
-echo "Done."
-echo ""

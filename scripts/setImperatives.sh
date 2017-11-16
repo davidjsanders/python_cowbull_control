@@ -1,0 +1,42 @@
+function setImperatives {
+    if [[ $VENDOR_PATH"X" == "X" ]]
+    then
+        showError "Error" 5 "The vendor path is not set. Unable to continue."
+        exit 5
+    fi
+
+    config_array=()
+
+    #
+    # Set configuration and persistence
+    #
+
+    if (( $MONGODB == 1 ))
+    then
+        # Using MongoDB
+        config_array+=(conf/mongodb/cowbull-config.yaml)
+        config_array+=($VENDOR_PATH/mongo-storage.yaml)
+        config_array+=(conf/mongodb/deploy.yaml)
+        config_array+=(conf/mongodb/service.yaml)
+    else
+        # Using Redis
+        config_array+=(conf/redis/cowbull-config.yaml)
+        config_array+=(conf/redis/deploy.yaml)
+        config_array+=(conf/redis/service.yaml)
+    fi
+
+    #
+    # Add cowbull-server
+    #
+    config_array+=(conf/cowbull-server/deploy.yaml)
+    config_array+=(conf/cowbull-server/service.yaml)
+
+
+    #
+    # Add cowbull webapp
+    #
+    config_array+=(conf/webapp/deploy.yaml)
+    config_array+=(conf/webapp/service.yaml)
+
+}
+

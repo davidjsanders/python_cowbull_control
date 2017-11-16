@@ -26,6 +26,7 @@ function svs_Acs1 {
     AUTOGROUP=${GROUP}"_"${CLUSTER}"_"${LOCATION}
     VENDOR_PATH=vendor/Azure
 }
+
 function svs_Azure1 {
     if [[ $LOCATION == "**notset**" ]]
     then

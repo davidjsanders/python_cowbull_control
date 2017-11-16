@@ -8,6 +8,8 @@ spec:
   ports:
   - port: 27017
     targetPort: 27017
-  type: NodePort
+# D Sanders
+# Remove NodePort and make service headless
+#  type: NodePort
   selector:
     role: mongo

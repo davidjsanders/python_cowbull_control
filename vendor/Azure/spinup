@@ -5,7 +5,7 @@
 #
 echo ""
 echo "Deploy to Azure Container Services - Kubernetes Controller"
-echo "=========================================================="
+echo "----------------------------------------------------------"
 echo ""
 echo "|------------------------------------|--------| "
 echo "| Validate environment               | Status |"

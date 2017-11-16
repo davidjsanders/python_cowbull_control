@@ -1,7 +1,11 @@
 #!/usr/bin/env bash
-echo ""
+echo >&2
+echo "Validating Minikube environment" >&2
+echo "-------------------------------" >&2
+echo >&2
+
 echo "|------------------------------------|--------| "
-echo "| Validate environment               | Status |"
+echo "| Validation step                    | Status |"
 echo "|------------------------------------|--------| "
 
 # Check variables are defined
@@ -31,27 +35,21 @@ then
 fi
 echo "  ok   |"
 
-echo -n "| Minikube current status            | "
+echo -n "| Minikube current status            |"
 minikubeStatus=$(minikube status --format "{{.MinikubeStatus}}" | tr [A-Z] [a-z])
-if [[ $minikubeStatus != "running" ]]
+if [[ $minikubeStatus == "running" ]]
 then
-    echo " fail  |"
-    echo
-    echo "Cannot tear down as Minikube does not appear to be running."
-    return 1
+    echo "running |"
 else
-    echo "  ok   |"
+    echo "stopped |"
 fi
 
 echo "|------------------------------------|--------| "
 echo ""
-echo "Step 1. Stop minikube"
-if (( $DRYRUN == 0 ))
-then
-    minikube stop
-else
-    echo "minikube stop ...dry run"
-fi
 echo ""
-echo "Done."
+echo "Configuration will be set as follows:"
+echo "-------------------------------------"
+echo ""
+echo "Minikube RAM  :   "$MINIRAM
+echo "Minikube CPUs :   "$MINICPU
 echo ""
