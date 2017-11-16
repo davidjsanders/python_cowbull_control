@@ -28,7 +28,7 @@ function dependencyCheck {
     then
         return 0
     else
-        showError "Warning" 1 "Dependency check failed" "There are dependencies missing: $errlist"
+        showError "Warning" 1 "Dependency check failed" "There are dependencies missing: $errlist. These may not be required for your operation, so you can choose to continue."
         if (( $QUIET != 1)) 
         then
             processContinue
