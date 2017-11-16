@@ -95,18 +95,18 @@ setVendorSpecifics
 #    actions.
 #
 echo "|------------------------------------------------------------------|" >&2
-echo "|                                                                  |" >&2
 if (( $TEARDOWN == 1 ))
 then
-    echo "| Tearing down the Python Cowbull suite with the following options |" >&2
+    echo "|                                                                  |" >&2
+    echo "| Tearing down Python Cowbull suite                                |" >&2
     echo "|                                                                  |" >&2
     echo "| WARNING! WARNING! WARNING!                                       |" >&2
     echo "| This step cannot be cancelled or reverted after confirming the   |" >&2
     echo "| operation below.                                                 |" >&2
+    echo "|                                                                  |" >&2
 else
-    echo "| Deploying Python Cowbull suite with the following options        |" >&2
+    echo "| Deploying Python Cowbull suite                                   |" >&2
 fi
-echo "|                                                                  |" >&2
 echo "|------------------------------------------------------------------|" >&2
 
 
