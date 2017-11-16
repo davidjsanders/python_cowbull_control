@@ -1,0 +1,115 @@
+#!/usr/bin/env bash
+#
+# 1. Load source modules
+#
+source scripts/v3/setDefaults.sh
+source scripts/v3/setVendorSpecifics.sh
+source scripts/v3/dependencyCheck.sh
+source scripts/v3/showError.sh
+source scripts/v3/showWelcome.sh
+source scripts/v3/deployServices.sh
+source scripts/v3/deployAzureSpecific.sh
+source scripts/v3/deployIngress.sh
+source scripts/v3/deployWebappService.sh
+source scripts/v3/processArgument.sh
+source scripts/v3/parseArgs.sh
+
+source scripts/v2/showHelp.sh
+source scripts/v2/showInfo.sh
+source scripts/v2/removeK8SComponents.sh
+source scripts/v2/deployK8SComponents.sh
+source scripts/v2/showConfig.sh
+source scripts/v2/showTeardown.sh
+source scripts/v2/showSpinup.sh
+source scripts/v2/processContinue.sh
+source scripts/v2/getContext.sh
+
+#
+# 2. Show welcome message
+#
+showWelcome
+
+#
+# 3. Set defaults and initialize variables
+#
+setDefaults
+
+#
+# 4. Parse command line arguments
+#
+parseArgs
+
+#
+# 5. Process each argument, validate it, and act on it.
+#
+while true; do
+    processArgument $1 $2
+    if (( $? == 3 )); then break; fi
+    shift $SHIFT_AMOUNT
+done
+
+#
+# 6. Check dependencies
+#
+dependencyCheck
+
+#
+# 7. Compute specific variable for each vendor
+#
+setVendorSpecifics
+
+#
+# 7. Show the welcome message. Differs based on tear down or instantiate
+#    actions.
+#
+echo "|------------------------------------------------------------------|" >&2
+echo "|                                                                  |" >&2
+if (( $TEARDOWN == 1 ))
+then
+    echo "| Tearing down the Python Cowbull suite with the following options |" >&2
+    echo "|                                                                  |" >&2
+    echo "| WARNING! WARNING! WARNING!                                       |" >&2
+    echo "| This step cannot be cancelled or reverted after confirming the   |" >&2
+    echo "| operation below.                                                 |" >&2
+else
+    echo "| Deploying Python Cowbull suite with the following options        |" >&2
+fi
+echo "|                                                                  |" >&2
+echo "|------------------------------------------------------------------|" >&2
+
+#
+# 9. Output the configuration to the user
+#
+showConfig
+
+#
+# 10. If not in quiet mode, confirm the action with the user because it
+#    is dangerous and not revertable.
+#
+if [[ $QUIET"X" == "X" ]]; then QUIET=0; fi
+if (( $QUIET != 1 ))
+then
+    processContinue
+    if (( $? != 1 )); then echo >&2; exit 0; fi
+fi
+
+#
+
+#
+# 12. Check if tear down or instantiate
+#
+if (( $TEARDOWN == 1 ))
+then
+    . $VENDOR_PATH/spindown-cluster
+else
+    . $VENDOR_PATH/spinup-cluster
+fi
+
+#
+# 13. Done.
+#
+echo
+echo "Done."
+echo
+
+exit 0

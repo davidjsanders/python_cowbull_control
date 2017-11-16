@@ -1,0 +1,17 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: webapp-svc
+  labels:
+    run: webapp
+    app: webapp
+    tier: webappFrontend
+spec:
+  selector:
+    app: webapp
+    tier: webappFrontend
+  ports:
+    - protocol: TCP
+      targetPort: 8080
+      port: 8080
+  type: LoadBalancer

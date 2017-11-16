@@ -1,0 +1,14 @@
+kind: ConfigMap
+apiVersion: v1
+metadata:
+    name: cowbull-config
+    namespace: default
+data:
+    cowbull.cfg: "{
+      \"LOGGING_FORMAT\": \"%(asctime)s %(levelname)s: %(message)s \", \n
+      \"LOGGING_LEVEL\": 10, \n
+      \"PERSISTENCE_ENGINE\": \"mongodb\", \n
+      \"MONGODB_HOST\": \"mongo-master\", \n
+      \"MONGODB_PORT\": 21706, \n
+      \"MONGODB_DB\": \"cowbull\" \n
+    }"
