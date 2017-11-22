@@ -7,5 +7,5 @@ data:
     cowbull.cfg: '{
       "LOGGING_FORMAT": "%(asctime)s %(levelname)s: %(message)s ",
       "LOGGING_LEVEL": 10,
-      "PERSISTER": {"engine_name": "redis", "parameters": {"host": "redis-master", "port": 6379, "db": 0}}
+      "PERSISTER": {"engine_name": "gcpstorage", "parameters": {"bucket": "dasander-python-cowbull-save-games"}}
     }'

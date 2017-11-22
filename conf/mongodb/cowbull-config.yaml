@@ -4,11 +4,8 @@ metadata:
     name: cowbull-config
     namespace: default
 data:
-    cowbull.cfg: "{
-      \"LOGGING_FORMAT\": \"%(asctime)s %(levelname)s: %(message)s \", \n
-      \"LOGGING_LEVEL\": 10, \n
-      \"PERSISTENCE_ENGINE\": \"mongodb\", \n
-      \"MONGODB_HOST\": \"mongo\", \n
-      \"MONGODB_PORT\": 27017, \n
-      \"MONGODB_DB\": \"cowbull\" \n
-    }"
+    cowbull.cfg: '{
+      "LOGGING_FORMAT": "%(asctime)s %(levelname)s: %(message)s ",
+      "LOGGING_LEVEL": 10,
+      "PERSISTER": {"engine_name": "mongodb", "parameters": {"host": "mongo", "port": 27017, "db": "cowbull"}}
+    }'
