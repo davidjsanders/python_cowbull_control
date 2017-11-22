@@ -54,6 +54,10 @@ function processArgument {
             MONGODB=1
             SHIFT_AMOUNT=1
             ;;
+        -G|--gcp-storage)
+            GCPSTORAGE=1
+            SHIFT_AMOUNT=1
+            ;;
         -q|--quiet)
             QUIET=1
             SHIFT_AMOUNT=1

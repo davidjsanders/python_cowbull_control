@@ -43,6 +43,7 @@ function setDefaults {
     VENDOR_SELECTED=0
     VENDOR_PATH="vendor/minikube"
     INGRESS=0
+    GCPSTORAGE=0
 
     SHIFT_AMOUNT=0
     ERROR_TEXT=""

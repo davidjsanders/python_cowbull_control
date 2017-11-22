@@ -10,6 +10,7 @@ _cowbull-control()
     opts=$opts"-C --deploy-cluster "
     opts=$opts"-D --dry-run "
     opts=$opts"-F --deploy-all "
+    opts=$opts"-G --gcp-storage "
     opts=$opts"-M --mongodb "
     opts=$opts"-S --deploy-services "
     opts=$opts"-T --tear-down "

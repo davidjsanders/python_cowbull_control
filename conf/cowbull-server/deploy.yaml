@@ -16,8 +16,8 @@ spec:
         image: dsanderscan/cowbull
         imagePullPolicy: Always
         env:
-#        - name: "LOGGING_LEVEL"
-#          value: "10"
+        - name: "LOGGING_LEVEL"
+          value: "10"
         - name: "COWBULL_CONFIG"
           value: "/cowbull/config/cowbull.cfg"
         resources:
@@ -27,6 +27,8 @@ spec:
         volumeMounts:
         - name: config-volume
           mountPath: /cowbull/config/
+        - name: gcp-credentials
+          mountPath: /cowbull/secrets/
         ports:
         - containerPort: 8080
       volumes:
@@ -36,3 +38,7 @@ spec:
           items:
           - key: cowbull.cfg
             path: cowbull.cfg
+      - name: gcp-credentials
+        secret:
+          secretName: gcp-credentials
+          optional: true

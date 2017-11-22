@@ -3,6 +3,7 @@ function parseArgs {
     parse_options=$parse_options"C"	# or --deploy-cluster; only deploy/tear down the cluster (no services)
     parse_options=$parse_options"D"	# or --dry-run; run through but DO NOT execute any step
     parse_options=$parse_options"F"	# or --deploy-all; deploy/tear down cluster AND services
+    parse_options=$parse_options"G"     # or --gcp-storage; use GCP Cloud Storage for persistence
     parse_options=$parse_options"M"     # or --mongodb; use MongoDB for persistence
     parse_options=$parse_options"S"	# or --deploy-services; deploy/tear down services only
     parse_options=$parse_options"T"	# or --tear-down; tear down rather than create
@@ -27,6 +28,7 @@ function parseArgs {
     parse_long_options=$parse_long_options"deploy-cluster,"
     parse_long_options=$parse_long_options"deploy-all,"
     parse_long_options=$parse_long_options"deploy-services,"
+    parse_long_options=$parse_long_options"gcp-storage,"
     parse_long_options=$parse_long_options"mini-cpu:,"
     parse_long_options=$parse_long_options"mini-ram:,"
     parse_long_options=$parse_long_options"mongodb,"

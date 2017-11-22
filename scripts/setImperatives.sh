@@ -18,6 +18,9 @@ function setImperatives {
         config_array+=($VENDOR_PATH/mongo-storage.yaml)
         config_array+=(conf/mongodb/deploy.yaml)
         config_array+=(conf/mongodb/service.yaml)
+    elif (( $GCPSTORAGE == 1 ))
+    then
+        config_array+=(conf/gcpstorage/cowbull-config.yaml)
     else
         # Using Redis
         config_array+=(conf/redis/cowbull-config.yaml)
