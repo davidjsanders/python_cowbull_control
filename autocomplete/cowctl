@@ -1,4 +1,4 @@
-_cowbull-control() 
+_cowctl() 
 {
     local cur prev opts
     COMPREPLY=()
@@ -34,5 +34,5 @@ _cowbull-control()
         return 0
     fi
 }
-complete -F _cowbull-control cowbull-control
+complete -F _cowctl cowctl
 
