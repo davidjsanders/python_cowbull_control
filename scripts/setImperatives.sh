@@ -24,6 +24,7 @@ function setImperatives {
     else
         # Using Redis
         config_array+=(conf/redis/cowbull-config.yaml)
+        config_array+=(conf/redis/redis-config.yaml)
         config_array+=(conf/redis/deploy.yaml)
         config_array+=(conf/redis/service.yaml)
     fi
