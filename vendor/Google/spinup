@@ -4,11 +4,11 @@
 #
 #
 echo >&2
-echo "Create K8S Google Container Engine cluster" >&2
-echo "------------------------------------------" >&2
+echo "Create K8S Google Kubernetes Engine cluster" >&2
+echo "-------------------------------------------" >&2
 echo >&2
 
-echo "1. Create the cluster. --resource-group "$GROUP" --name "$CLUSTER" --agent-count "$AGENT_COUNT" --agent-vm-size "$MACHINE_TYPE
+echo "1. Create the cluster: name: "$CLUSTER", zone: "$LOCATION", number of agents: "$AGENT_COUNT", machine type: "$MACHINE_TYPE
 echo ""
 echo "gcloud container clusters create $CLUSTER --disk-size 100 --zone $LOCATION --enable-cloud-logging --enable-cloud-monitoring --machine-type $MACHINE_TYPE --num-nodes $AGENT_COUNT"
 if [[ $DRYRUN != 1  ]]
