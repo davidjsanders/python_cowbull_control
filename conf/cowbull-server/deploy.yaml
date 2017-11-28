@@ -31,7 +31,21 @@ spec:
           mountPath: /cowbull/secrets/
         ports:
         - containerPort: 8080
+      initContainers:
+      - name: init-cowbull-server
+        image: busybox
+        command: ['sh', '-c', 'if [ -e /cowbull-init/init.sh ]; then source /cowbull-init/init.sh; fi']
+        volumeMounts:
+        - mountPath: /cowbull-init
+          name: cowbull-init
       volumes:
+      - name: cowbull-init
+        configMap:
+          name: cowbull-init-config
+          optional: true
+          items:
+          - key: init.sh
+            path: init.sh
       - name: config-volume
         configMap:
           name: cowbull-config

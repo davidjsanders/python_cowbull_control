@@ -1,0 +1,31 @@
+_clustctl() 
+{
+    local cur prev opts
+    COMPREPLY=()
+    cur="${COMP_WORDS[COMP_CWORD]}"
+    prev="${COMP_WORDS[COMP_CWORD-1]}"
+    opts="azure "
+    opts=$opts"google "
+    opts=$opts"minikube "
+    opts=$opts"-D --dry-run "
+    opts=$opts"-a --agents "
+    opts=$opts"-b --disk-size "
+    opts=$opts"-c --mini-cpu "
+    opts=$opts"-g --group "
+    opts=$opts"-h --help "
+    opts=$opts"-k --get-context "
+    opts=$opts"-l --location "
+    opts=$opts"-m --masters "
+    opts=$opts"-n --dns-name "
+    opts=$opts"-p --pip-name "
+    opts=$opts"-q --quiet "
+    opts=$opts"-r --mini-ram "
+    opts=$opts"-t --machine-type "
+
+    if [[ ${cur} == -* ]] ; then
+        COMPREPLY=( $(compgen -W "${opts}" -- ${cur}) )
+        return 0
+    fi
+}
+complete -F _clustctl clustctl
+

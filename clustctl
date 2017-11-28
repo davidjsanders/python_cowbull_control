@@ -16,7 +16,7 @@ source scripts/getContext.sh
 source scripts/parseArgs.sh
 
 # function to process each argument
-source scripts/processArgument.sh
+source scripts/clustctl/processArgument.sh
 
 # function to ask user if they want to continue
 source scripts/processContinue.sh
@@ -25,7 +25,7 @@ source scripts/processContinue.sh
 source scripts/removeK8SComponents.sh
 
 # function to set default values for variables
-source scripts/setDefaults.sh
+source scripts/clustctl/setDefaults.sh
 
 # function to define the imperative commands needed to apply
 # or delete kubernets objects.
@@ -41,10 +41,7 @@ source scripts/showConfig.sh
 source scripts/showError.sh
 
 # function to show help
-source scripts/showHelp.sh
-
-# function to show additional usage information
-source scripts/showInfo.sh
+source scripts/clustctl/showHelp.sh
 
 # function to show welcome message
 source scripts/showWelcome.sh
@@ -100,6 +97,10 @@ then
     echo "|                                                                  |" >&2
     echo "| Tearing down Python Cowbull suite                                |" >&2
     echo "|                                                                  |" >&2
+    echo "| WARNING! WARNING! WARNING!                                       |" >&2
+    echo "| This step cannot be cancelled or reverted after confirming the   |" >&2
+    echo "| operation below.                                                 |" >&2
+    echo "|                                                                  |" >&2
 else
     echo "| Deploying Python Cowbull suite                                   |" >&2
 fi
@@ -135,12 +136,6 @@ showConfig
 
 
 #
-# 11. Set the imperative commands based on args
-#
-setImperatives
-
-
-#
 # 12. If not in quiet mode, confirm the action with the user because it
 #    is dangerous and not revertable.
 #
@@ -156,24 +151,16 @@ fi
 
 
 #
-# 14. teardown or deploy the services
+# 13. Check if tear down or instantiate cluster
 #
-if (( $DEPLOYSERVICES == 1 )) || (( $DEPLOYFULL == 1 ))
+if (( $TEARDOWN == 1 ))
 then
-    if (( $TEARDOWN == 1 ))
-    then
-        #
-        # Check if deploy full has been set (the default); if it
-        # is, then don't do anything else as the services are
-        # always pulled down before the cluster.
-        #
-        removeK8Scomponents
-    else
-        deployK8Scomponents
-    fi
+    . $VENDOR_PATH/teardown
+else
+    . $VENDOR_PATH/spinup
 fi
 
-#
+
 echo
 echo "Done."
 echo

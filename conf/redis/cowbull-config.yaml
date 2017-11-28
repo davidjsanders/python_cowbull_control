@@ -9,3 +9,22 @@ data:
       "LOGGING_LEVEL": 10,
       "PERSISTER": {"engine_name": "redis", "parameters": {"host": "redis", "port": 6379, "master_port": 26379, "db": 0}}
     }'
+---
+kind: ConfigMap
+apiVersion: v1
+metadata:
+    name: cowbull-init-config
+    namespace: default
+data:
+  init.sh: |
+    #!/bin/bash
+    for i in `seq 0 1`; 
+    do 
+        while ! ping -c 1 redis-$i.redis >& /tmp/nullout; 
+        do 
+            echo "Waiting for redis-$i"; 
+            sleep 5; 
+        done; 
+        echo "redis $i ready"; 
+    done
+
