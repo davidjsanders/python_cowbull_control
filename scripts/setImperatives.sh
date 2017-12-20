@@ -13,7 +13,7 @@ function setImperatives {
 
     if (( $MONGODB == 1 ))
     then
-        if [[ ${TAGS}"X" != "X" ]]
+        if [[ ${TAGS}"X" != ":latestX" ]]
         then
             showError "Error" 10 "MongoDB Persistence Engine is NOT supported on the ARM platform"
             exit 10
