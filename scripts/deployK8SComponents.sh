@@ -20,7 +20,7 @@ function deployK8Scomponents {
             echo "kubectl apply -f $config_imperative" >&2
         else
             echo -n "Applying configuration in: $config_imperative ... "
-            kubectl apply -f $config_imperative &> /tmp/ignore.me
+            envsubst < $config_imperative | kubectl apply -f - &> /tmp/ignore.me
             return_status=$?
             if (( $return_status != 0 ))
             then

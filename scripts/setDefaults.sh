@@ -51,10 +51,10 @@ function setDefaults {
     TEMP=$(uname -a | grep arm)
     if [[ $TEMP"X" == "X" ]];
     then
-        TAGS=":latest"
-        REPO=""
+        export TAGS=":latest"
+        export REPO=""
     else
-        TAGS=":latest-arm32" # Set images to pull arm
-        REPO="arm32v7/"
+        export TAGS=":latest-arm32" # Set images to pull arm
+        export REPO="arm32v7/"
     fi
 }

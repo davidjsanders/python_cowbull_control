@@ -13,7 +13,7 @@ spec:
     spec:
       containers:
       - name: cowbull
-        image: dsanderscan/cowbull
+        image: dsanderscan/cowbull${TAGS}
         imagePullPolicy: Always
         env:
         - name: "LOGGING_LEVEL"
@@ -33,7 +33,7 @@ spec:
         - containerPort: 8080
       initContainers:
       - name: init-cowbull-server
-        image: busybox
+        image: ${REPO}busybox
         command: ['sh', '-c', 'if [ -e /cowbull-init/init.sh ]; then source /cowbull-init/init.sh; fi']
         volumeMounts:
         - mountPath: /cowbull-init
