@@ -20,11 +20,11 @@ data:
     #!/bin/bash
     for i in `seq 0 1`; 
     do 
-        while ! ping -c 1 redis-$i.redis >& /tmp/nullout; 
+        while ! ping -c 1 redis-${DOLLAR}i.redis >& /tmp/nullout; 
         do 
-            echo "Waiting for redis-$i"; 
+            echo "Waiting for redis-${DOLLAR}i"; 
             sleep 5; 
         done; 
-        echo "redis $i ready"; 
+        echo "redis ${DOLLAR}i ready"; 
     done
 

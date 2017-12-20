@@ -48,6 +48,7 @@ function setDefaults {
     SHIFT_AMOUNT=0
     ERROR_TEXT=""
 
+    export DOLLAR='$'
     TEMP=$(uname -a | grep arm)
     if [[ $TEMP"X" == "X" ]];
     then
