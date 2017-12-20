@@ -6,7 +6,7 @@ function dependencyCheck {
 #    printf "|----------------------|------|\n" >&2
 #    printf "| %-20s |%-6s|\n" "Dependency Check" "Status" >&2
 #    printf "|----------------------|------|\n" >&2
-    dependencies="jq az gcloud kubectl minikube"
+    dependencies="envsubst jq az gcloud kubectl minikube"
     errlist=""
     for dep in $dependencies
     do

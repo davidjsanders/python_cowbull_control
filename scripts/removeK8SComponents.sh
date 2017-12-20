@@ -19,7 +19,7 @@ function removeK8Scomponents {
             echo "kubectl delete -f $config_imperative --ignore-not-found" >&2
         else
             echo -n "Removing configuration in: $config_imperative ... "
-            kubectl delete -f $config_imperative --ignore-not-found &> /tmp/ignore.me
+            envsubst < $config_imperative | kubectl delete -f - --ignore-not-found &> /tmp/ignore.me
             return_status=$?
             if (( $return_status != 0 ))
             then

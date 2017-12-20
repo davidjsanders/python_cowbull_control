@@ -13,7 +13,7 @@ spec:
     spec:
       containers:
       - name: webapp
-        image: dsanderscan/cowbull_webapp:latest
+        image: dsanderscan/cowbull_webapp${TAGS}
         resources:
           requests:
             cpu: '0.1'

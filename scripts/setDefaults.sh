@@ -47,4 +47,15 @@ function setDefaults {
 
     SHIFT_AMOUNT=0
     ERROR_TEXT=""
+
+    export DOLLAR='$'
+    TEMP=$(uname -a | grep arm)
+    if [[ $TEMP"X" == "X" ]];
+    then
+        export TAGS=":latest"
+        export REPO=""
+    else
+        export TAGS=":latest-arm32" # Set images to pull arm
+        export REPO="arm32v7/"
+    fi
 }

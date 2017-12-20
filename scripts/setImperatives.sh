@@ -13,6 +13,11 @@ function setImperatives {
 
     if (( $MONGODB == 1 ))
     then
+        if [[ ${TAGS}"X" != ":latestX" ]]
+        then
+            showError "Error" 10 "MongoDB Persistence Engine is NOT supported on the ARM platform"
+            exit 10
+        fi
         # Using MongoDB
         config_array+=(conf/mongodb/cowbull-config.yaml)
         config_array+=($VENDOR_PATH/mongo-storage.yaml)
