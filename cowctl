@@ -1,4 +1,14 @@
 #!/usr/bin/env bash
+if [[ ${COWCTL_PATH}"X" == "X" ]]
+then
+    echo >&2
+    echo "ERROR: Unable to run - COWCTL_PATH is not set. Run 'export COWCTL_PATH=/path/to/python_cowbull_control/' and run again." >&2
+    echo >&2
+    exit 100
+fi
+
+current_directory=$(pwd)
+cd $COWCTL_PATH
 #
 # 1. Load source modules
 #
@@ -178,4 +188,5 @@ echo
 echo "Done."
 echo
 
+cd $current_directory
 exit 0
