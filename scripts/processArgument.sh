@@ -14,6 +14,12 @@ function processArgument {
     SHIFT_AMOUNT=0
 
     case "$1" in
+        docker)
+            if (( $VENDOR_SELECTED == 1 )); then showVendorError; fi
+            VENDOR_SELECTED=1
+            EXEDOCKER=1
+            SHIFT_AMOUNT=1
+            ;;
         azure)
             if (( $VENDOR_SELECTED == 1 )); then showVendorError; fi
             VENDOR_SELECTED=1

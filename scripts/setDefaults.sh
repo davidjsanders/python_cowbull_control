@@ -19,6 +19,7 @@ function setDefaults {
     EXEAZURE=0
     EXEGOOGLE=0
     EXEMINIKUBE=0
+    EXEDOCKER=0
     DATEFILL=$(date +"%m%d%y")
     GROUP="dasander"${DATEFILL}
     MASTER_COUNT=1
@@ -44,6 +45,8 @@ function setDefaults {
     VENDOR_PATH="vendor/minikube"
     INGRESS=0
     GCPSTORAGE=0
+    DOCKER_PROJECT="cowctl"
+    DOCKER_FILENAME="/tmp/"$(date +"%H%M%S%N")".yml"
 
     SHIFT_AMOUNT=0
     ERROR_TEXT=""

@@ -5,6 +5,24 @@ function deployK8Scomponents {
         exit 5
     fi
 
+    if (( $EXEDOCKER == 1 ))
+    then
+        echo "" >&2
+        echo "Applying docker configuration" >&2
+        echo "-----------------------------" >&2
+        echo >&2
+        echo "Repo:  ${REPO}" >&2
+        echo "Tags:  ${TAGS}" >&2
+        echo >&2
+        envsubst < conf/docker/compose-redis.yml > ${DOCKER_FILENAME}
+        docker-compose -p ${DOCKER_PROJECT} -f ${DOCKER_FILENAME} up -d
+        return_state=$?
+        echo >&2
+        echo "use 'docker-compose -p ${DOCKER_PROJECT} -f ${DOCKER_FILENAME} {command}' to control Docker." >&2
+        echo "(Note, this can be setup into an alias --> alias mydemo='docker-compose -p ${DOCKER_PROJECT} -f ${DOCKER_FILENAME}')" >&2
+        echo >&2
+    fi
+
     if [[ ${config_array[@]}"X" == "X" ]]; then return 0; fi
 
     echo >&2
