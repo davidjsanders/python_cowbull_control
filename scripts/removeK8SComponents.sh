@@ -5,6 +5,20 @@ function removeK8Scomponents {
         exit 5
     fi
 
+    if (( $EXEDOCKER == 1 ))
+    then
+        echo "" >&2
+        echo "Applying docker configuration" >&2
+        echo "-----------------------------" >&2
+        echo >&2
+        echo "Repo:  ${REPO}" >&2
+        echo "Tags:  ${TAGS}" >&2
+        echo >&2
+        envsubst < conf/docker/compose-redis.yml > /tmp/tempo.yml
+        docker-compose -p cowctl -f /tmp/tempo.yml down
+        return $?
+    fi
+
     if [[ ${config_array[@]}"X" == "X" ]]; then return 0; fi
 
     echo >&2

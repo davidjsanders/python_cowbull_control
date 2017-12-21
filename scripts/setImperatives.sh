@@ -10,6 +10,10 @@ function setImperatives {
     #
     # Set configuration and persistence
     #
+    if (( $EXEDOCKER == 1 ))
+    then
+        return
+    fi
 
     if (( $MONGODB == 1 ))
     then
