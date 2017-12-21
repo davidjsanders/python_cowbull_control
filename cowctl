@@ -3,7 +3,7 @@ if [[ ${COWCTL_PATH}"X" == "X" ]]
 then
     echo >&2
     echo "ERROR: Unable to run - COWCTL_PATH is not set. Run 'export COWCTL_PATH=/path/to/python_cowbull_control/' and run again." >&2
-    echo "(If currently in the directory, simply run 'export COWCTL_PATH=$(pwd)')" >&2
+    echo "(If currently in the directory, simply run 'export COWCTL_PATH=\$(pwd)')" >&2
     echo >&2
     exit 100
 fi
