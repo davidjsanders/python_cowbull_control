@@ -15,7 +15,7 @@ function deployK8Scomponents {
         echo "Tags:  ${TAGS}" >&2
         echo >&2
         envsubst < conf/docker/compose-redis.yml > ${DOCKER_FILENAME}
-        docker-compose -p ${DOCKER_PROJECT} -f ${DOCKER_FILENAME} up -d
+        docker-compose -p ${DOCKER_PROJECT} -f ${DOCKER_FILENAME} up -d --scale cowbull_svc=3
         return_state=$?
         echo >&2
         echo "use 'docker-compose -p ${DOCKER_PROJECT} -f ${DOCKER_FILENAME} {command}' to control Docker." >&2
