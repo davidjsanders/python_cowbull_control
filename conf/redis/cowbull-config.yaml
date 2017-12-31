@@ -18,7 +18,7 @@ metadata:
 data:
   init.sh: |
     #!/bin/bash
-    for i in `seq 0 1`; 
+    for i in `seq 0 ${REDIS_LAST_NODE}`; 
     do 
         while ! ping -c 1 redis-${DOLLAR}i.redis >& /tmp/nullout; 
         do 

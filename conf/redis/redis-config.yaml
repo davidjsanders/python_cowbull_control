@@ -6,9 +6,15 @@ metadata:
 data:
   init.sh: |
     #!/bin/bash
+    echo ""
+    echo "In init.sh"
+    echo "=========="
+    echo ""
     if [[ ${DOLLAR}{HOSTNAME} == 'redis-0' ]]; then
+      echo "Host is redis-0"
       redis-server /redis-config/master.conf
     else
+      echo "Host is ${DOLLAR}{HOSTNAME}"
       redis-server /redis-config/slave.conf
     fi
   master.conf: |
@@ -26,6 +32,10 @@ data:
     sentinel failover-timeout redis 20000
   sentinel.sh: |
     #!/bin/bash
+    echo ""
+    echo "In sentinel.sh"
+    echo "=============="
+    echo ""
     while ! ping -c 1 redis-0.redis; do
         echo 'Waiting for server'
         sleep 1

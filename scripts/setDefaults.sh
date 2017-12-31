@@ -47,6 +47,8 @@ function setDefaults {
     GCPSTORAGE=0
     DOCKER_PROJECT="cowctl"
     DOCKER_FILENAME="/tmp/"$(date +"%H%M%S%N")".yml"
+    REDIS_REPLICAS=3
+    REDIS_LAST_NODE=$(($REDIS_REPLICAS - 1))
 
     SHIFT_AMOUNT=0
     ERROR_TEXT=""
@@ -57,8 +59,12 @@ function setDefaults {
     then
         export TAGS=":latest"
         export REPO=""
+        export REDIS_TAGS=":4.0.6"
     else
         export TAGS=":latest-arm32" # Set images to pull arm
         export REPO="arm32v7/"
+        export REDIS_TAGS=":4.0.6-arm32v7"
     fi
+    export REDIS_REPLICAS
+    export REDIS_LAST_NODE
 }

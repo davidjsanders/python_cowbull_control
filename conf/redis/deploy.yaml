@@ -3,7 +3,7 @@ kind: StatefulSet
 metadata:
   name: redis
 spec:
-  replicas: 1
+  replicas: ${REDIS_REPLICAS}
   serviceName: redis
   template:
     metadata:
@@ -11,9 +11,8 @@ spec:
         app: redis
     spec:
       containers:
-      #- command: [sh, -c, source /redis-config/init.sh ]
-      - command: [sh, -c, redis-server]
-        image: ${REPO}redis:3
+      - command: [bash, -c, . /redis-config/init.sh]
+        image: dsanderscan/python_cowbull_redis${REDIS_TAGS}
         name: redis
         ports:
         - containerPort: 6379
@@ -23,12 +22,12 @@ spec:
           name: config
         - mountPath: /redis-data
           name: data
-#      - command: [sh, -c, source /redis-config/sentinel.sh]
-#        image: ${REPO}redis:3
-#        name: sentinel
-#        volumeMounts:
-#        - mountPath: /redis-config
-#          name: config
+      - command: [bash, -c, . /redis-config/sentinel.sh]
+        image: dsanderscan/python_cowbull_redis${REDIS_TAGS}
+        name: sentinel
+        volumeMounts:
+        - mountPath: /redis-config
+          name: config
       volumes:
       - configMap:
           defaultMode: 420
