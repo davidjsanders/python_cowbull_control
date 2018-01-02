@@ -2,11 +2,29 @@ apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
   name: test
+  annotations:
+    kubernetes.io/ingress.class: traefik
+    traefik.frontend.rule.type: PathPrefixStrip
 spec:
   rules:
+  - host: pi-worker1
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: test-webapp-svc
+          servicePort: http
+  - host: pi-worker2
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: test-webapp-svc
+          servicePort: http
   - host: pi-master
     http:
       paths:
-      - backend:
-          serviceName: webapp-svc
-          servicePort: 8080
+      - path: /
+        backend:
+          serviceName: test-webapp-svc
+          servicePort: http

@@ -1,0 +1,16 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: test-webapp-svc
+  labels:
+    run: webapp
+    app: webapp
+    tier: webappFrontend
+spec:
+  selector:
+    app: webapp
+    tier: webappFrontend
+  ports:
+    - name: http
+      targetPort: 8080
+      port: 80
