@@ -104,24 +104,9 @@ dependencyCheck
 setVendorSpecifics
 
 
-#
-# 8. Show the welcome message. Differs based on tear down or instantiate
-#    actions.
-#
-echo "|------------------------------------------------------------------|" >&2
-if (( $TEARDOWN == 1 ))
-then
-    echo "|                                                                  |" >&2
-    echo "| Tearing down Python Cowbull suite                                |" >&2
-    echo "|                                                                  |" >&2
-else
-    echo "| Deploying Python Cowbull suite                                   |" >&2
-fi
-echo "|------------------------------------------------------------------|" >&2
-
 
 #
-# 9. Validate vendor prereqs
+# 8. Validate vendor prereqs
 #
 echo >&2
 echo "Validating environment and prerequisites" >&2
@@ -140,6 +125,23 @@ then
     # prompted twice.
     QUIET=1
 fi
+
+
+#
+# 9. Show the welcome message. Differs based on tear down or instantiate
+#    actions.
+#
+echo "" >&2
+echo "|------------------------------------------------------------------|" >&2
+if (( $TEARDOWN == 1 ))
+then
+    echo "|                                                                  |" >&2
+    echo "| Tearing down Python Cowbull suite                                |" >&2
+    echo "|                                                                  |" >&2
+else
+    echo "| Deploying Python Cowbull suite                                   |" >&2
+fi
+echo "|------------------------------------------------------------------|" >&2
 
 
 #

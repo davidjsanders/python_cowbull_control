@@ -1,31 +1,60 @@
 function dependencyCheck {
-#    echo >&2
-#    echo "Step 1 - Checking dependencies." >&2
-#    echo "-------------------------------" >&2
-#    echo >&2
-#    printf "|----------------------|------|\n" >&2
-#    printf "| %-20s |%-6s|\n" "Dependency Check" "Status" >&2
-#    printf "|----------------------|------|\n" >&2
-    dependencies="docker-compose envsubst jq az gcloud kubectl minikube"
+    dependencies="docker-compose jq az gcloud kubectl minikube"
+    reqd_dependencies="envsubst"
     errlist=""
+    warnlist=""
+
+    echo >&2
+    echo "Checking suggested dependencies." >&2
+    echo >&2
+    printf "|----------------------|------|\n" >&2
+    printf "| %-20s |%-6s|\n" "Dependency Check" "Status" >&2
+    printf "|----------------------|------|\n" >&2
+
     for dep in $dependencies
     do
-#        printf "| %-20s | " $dep >&2
+        printf "| %-20s | " $dep >&2
+
         check=$(which $dep)"X"
         if [[ $check == "X" ]] 
         then 
-            inline_status="fail"; 
-            errlist=$errlist" $dep"
+            inline_status="  no  "; 
+            warnlist=$errlist" $dep"
         else 
             inline_status="pass"; 
         fi
-#        printf "%-4s |\n" $inline_status
+
+        printf "%-4s |\n" $inline_status
     done
-#    printf "|-%-20s-|%-6s|\n" "--------------------" "------" >&2
-#    echo >&2
+    printf "|----------------------|------|\n" >&2
+
+    echo >&2
+    echo "Checking mandatory dependencies." >&2
+    echo >&2
+    printf "|----------------------|------|\n" >&2
+    printf "| %-20s |%-6s|\n" "Dependency Check" "Status" >&2
+    printf "|----------------------|------|\n" >&2
+
+    for dep in $reqd_dependencies
+    do
+        printf "| %-20s | " $dep >&2
+        check=$(which $dep)"X"
+        if [[ $check == "X" ]]
+        then
+            inline_status="  no  ";
+            errlist=$errlist" $dep"
+        else
+            inline_status="pass";
+        fi
+
+        printf "%-4s |\n" $inline_status
+    done
+    printf "|----------------------|------|\n\n" >&2
 
     if [[ $errlist"X" == "X" ]]
     then
+        echo "All dependencies passed" >&2
+        echo "" >&2
         return 0
     else
         showError "Warning" 1 "Dependency check failed" "There are dependencies missing: $errlist. These may not be required for your operation, so you can choose to continue."

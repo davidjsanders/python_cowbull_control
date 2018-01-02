@@ -13,6 +13,12 @@ function showConfig {
     elif (( $EXEGOOGLE == 1 ))
     then
         echo "Google Container Engine (GKE)" >&2
+    elif (( $EXEDOCKER == 1 ))
+    then
+        echo "Docker" >&2
+    elif (( $EXEKUBE == 1 ))
+    then
+        echo "Kubernetes" >&2
     elif (( $EXEMINIKUBE == 1 ))
     then
         echo "Minikube" >&2
@@ -23,6 +29,8 @@ function showConfig {
     showConfigAcs$EXEACS
     showConfigGoogle$EXEGOOGLE
     showConfigMinikube$EXEMINIKUBE
+    showConfigDocker$EXEDOCKER
+    showConfigKube$EXEKUBE
 
     echo >&2
     echo "General Parameters" >&2
@@ -97,3 +105,24 @@ function showConfigMinikube1 {
     echo "Minikube CPU allocation        : "${MINICPU} >&2
     echo "Minikube RAM allocation        : "${MINIRAM} >&2
 }
+
+function showConfigDocker0 {
+    :
+}
+
+function showConfigDocker1 {
+    echo
+    echo "Deploy to Docker (via compose)" >&2
+    echo "-----------------------------" >&2
+}
+
+function showConfigKube0 {
+    :
+}
+
+function showConfigKube1 {
+    echo
+    echo "Deploy to Kubernetes (local) " >&2
+    echo "-----------------------------" >&2
+}
+

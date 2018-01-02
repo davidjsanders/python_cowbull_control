@@ -18,6 +18,10 @@ function svs_Docker0 {
     :
 }
 
+function svs_Kube0 {
+    :
+}
+
 function svs_Acs1 {
     if [[ $LOCATION == "**notset**" ]]
     then
@@ -64,14 +68,20 @@ function svs_Docker1 {
     VENDOR_PATH=vendor/docker
 }
 
+function svs_Kube1 {
+    VENDOR_PATH=vendor/kubernetes
+}
+
 function setVendorSpecifics {
     if (( $EXEACS == 0 )) && \
        (( $EXEAZURE == 0 )) && \
        (( $EXEGOOGLE == 0 )) && \
        (( $EXEMINIKUBE == 0 )) && \
+       (( $EXEKUBE == 0 )) && \
        (( $EXEDOCKER == 0 ))
     then
-        showError "Error" 2 "No vendor selected" "A vendor needs to be specified in the command; e.g.: deploy minikube | deploy acs | deploy azure | deploy google."
+        vendorlist="acs, azure, google, minikube, kubernetes, or docker"
+        showError "Error" 2 "No vendor selected" "A vendor needs to be specified in the command and one of: ${vendorlist}"
         exit 2
     fi
 
@@ -82,4 +92,5 @@ function setVendorSpecifics {
     svs_Google$EXEGOOGLE
     svs_Minikube$EXEMINIKUBE
     svs_Docker$EXEDOCKER
+    svs_Kube$EXEKUBE
 }

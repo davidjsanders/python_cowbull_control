@@ -20,6 +20,7 @@ function setDefaults {
     EXEGOOGLE=0
     EXEMINIKUBE=0
     EXEDOCKER=0
+    EXEKUBE=0
     DATEFILL=$(date +"%m%d%y")
     GROUP="dasander"${DATEFILL}
     MASTER_COUNT=1
