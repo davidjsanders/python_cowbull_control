@@ -1,0 +1,12 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: test
+spec:
+  rules:
+  - host: minikube
+    http:
+      paths:
+      - backend:
+          serviceName: webapp-svc
+          servicePort: 8080
