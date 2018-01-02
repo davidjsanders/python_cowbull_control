@@ -1,4 +1,7 @@
 #!/usr/bin/env bash
+#
+# Revision 0.2 - Updating to support ARM and x86/x64
+#
 if [[ ${COWCTL_PATH}"X" == "X" ]]
 then
     echo >&2
