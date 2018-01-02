@@ -24,8 +24,9 @@ echo "  ok   |"
 
 # Check Kubernetes version
 echo -n "| Checking Kubernetes version        | "
-kubever=$(kubectl version --short=true | grep "Server")
-if [[ $GROUP"X" == "X"  ]];
+kubever=$(kubectl version --short=true 2> /dev/null | grep "Server")
+retstat=$?
+if [[ $GROUP"X" == "X"  ]] || [[ $retstat != 0 ]];
 then
     echo " FAIL  |"
     echo
