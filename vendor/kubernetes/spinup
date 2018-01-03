@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+echo "" >&2
+echo "Deploy local Kubernetes cluster" >&2
+echo "-------------------------------" >&2
+echo "" >&2
+echo "Starting - PLEASE NOTE: Assumes all prep. work completed." >&2
+echo "see: https://gist.github.com/alexellis/fdbc90de7691a1b9edb545c17da2d975" >&2
+echo "     for more information." >&2
+echo "" >&2
+echo "NOTE: Currently work in progress - follow the URL instead :) " >&2
+echo "" >&2
