@@ -28,6 +28,7 @@ _cowctl()
     opts=$opts"-q --quiet "
     opts=$opts"-r --mini-ram "
     opts=$opts"-t --machine-type "
+    opts=$opts"-x --experiments "
 
     if [[ ${cur} == -* ]] ; then
         COMPREPLY=( $(compgen -W "${opts}" -- ${cur}) )

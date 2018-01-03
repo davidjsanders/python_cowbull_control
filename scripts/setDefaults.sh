@@ -54,16 +54,20 @@ function setDefaults {
     SHIFT_AMOUNT=0
     ERROR_TEXT=""
 
+    EXPERIMENTS=0
+
     export DOLLAR='$'
     TEMP=$(uname -a | grep arm)
     if [[ $TEMP"X" == "X" ]];
     then
         export TAGS=":latest"
         export REPO=""
+        export REPOV6=""
         export REDIS_TAGS=":4.0.6"
     else
         export TAGS=":latest-arm32" # Set images to pull arm
         export REPO="arm32v7/"
+        export REPOV6="arm32v6/"
         export REDIS_TAGS=":4.0.6-arm32v7"
     fi
     export REDIS_REPLICAS

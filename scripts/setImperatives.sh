@@ -51,5 +51,15 @@ function setImperatives {
     config_array+=(conf/webapp/deploy.yaml)
     config_array+=(conf/webapp/service.yaml)
 
+    #
+    # Add experimental traefik load balancer
+    #
+    if (( $EXPERIMENTS == 1 ))
+    then
+        config_array+=(experiment/traefik/traefik-rbac.yaml)
+        config_array+=(experiment/traefik/traefik-daemon.yaml)
+        config_array+=(experiment/webapp-deploy.yaml)
+        config_array+=(experiment/ingress.yaml)
+    fi
 }
 

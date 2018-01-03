@@ -50,6 +50,10 @@ function processArgument {
             EXEMINIKUBE=1
             SHIFT_AMOUNT=1
             ;;
+        -x|--experiments)
+            EXPERIMENTS=1
+            SHIFT_AMOUNT=1
+            ;;
         -h|--help)
             showHelp
             exit 0
