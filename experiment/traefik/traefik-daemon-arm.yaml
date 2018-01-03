@@ -27,10 +27,10 @@ spec:
         name: traefik-ingress-lb
         ports:
         - name: http
-          containerPort: 80
-          hostPort: 80
+          containerPort: 8000
+          hostPort: 8000
         - name: admin
-          containerPort: 8080
+          containerPort: 8888
         securityContext:
           privileged: true
         args:
@@ -48,9 +48,9 @@ spec:
     k8s-app: traefik-ingress-lb
   ports:
     - protocol: TCP
-      port: 80
+      port: 8000
       name: web
     - protocol: TCP
-      port: 8080
+      port: 8888
       name: admin
   type: NodePort
