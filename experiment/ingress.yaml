@@ -7,6 +7,13 @@ metadata:
     traefik.frontend.rule.type: PathPrefixStrip
 spec:
   rules:
+  - host: minikube
+    http:
+      paths:
+      - path: /cowbull
+        backend:
+          serviceName: test-webapp-svc
+          servicePort: http
   - host: pi-worker1
     http:
       paths:
