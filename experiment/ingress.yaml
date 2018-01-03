@@ -10,21 +10,21 @@ spec:
   - host: minikube
     http:
       paths:
-      - path: /cowbull
+      - path: /
         backend:
           serviceName: test-webapp-svc
           servicePort: http
   - host: pi-worker1
     http:
       paths:
-      - path: /cowbull
+      - path: /
         backend:
           serviceName: test-webapp-svc
           servicePort: http
   - host: pi-worker2
     http:
       paths:
-      - path: /cowbull
+      - path: /
         backend:
           serviceName: test-webapp-svc
           servicePort: http
