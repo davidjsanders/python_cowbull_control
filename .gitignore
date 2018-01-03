@@ -6,6 +6,7 @@ __pycache__/
 # D Sanders
 *.xml
 *.iml
+secrets/
 
 # C extensions
 *.so
